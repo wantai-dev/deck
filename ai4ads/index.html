@@ -1,0 +1,638 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<title>Ai4Ads｜让投手经验成为团队可复用的能力</title>
+<meta name="description" content="Ai4Ads 客户方案：把资深投手的判断、动作和复盘方法沉淀为团队可以复用的能力。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* Layout: 满版深绿封面 → 引言（三个难题）→ 以业务架构图为核心的一节（可点击的七个环节 + 说明面板）→ 落地 / 验证 / 积累 / 安全 / 留在自己手里，各一屏 */
+:root{
+  --paper:#FBF7EE; --surface:#FFFDF6; --ink:#2E2D29; --ink-2:#4A4740; --ink-3:#6E6A62; --line:#CFC4B2; --line-soft:#E6DFCF;
+  --brand:#1F6B4B; --brand-light:#2E8B65; --brand-tint:#E7F3EB; --brand-deep:#123D2B;
+  --hero-bg:#123D2B; --hero-fg:#FBF7EE; --hero-muted:#B8CFC2;
+  --note-bg:#FFF4DA; --note-line:#D9A441; --note-fg:#5A4310;
+  --good:#1F6B4B; --warn:#B47C2A; --bad:#A3412E;
+  --display:"Noto Serif SC","Source Han Serif SC","Songti SC",serif;
+  --body:"Noto Sans SC","Source Han Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#15171A; --surface:#1D2023; --ink:#ECE7DA; --ink-2:#C9C3B4; --ink-3:#9A9486; --line:#3C3F3A; --line-soft:#2B2E2A;
+  --brand:#4FB283; --brand-light:#6CC79A; --brand-tint:#1B3328; --brand-deep:#0E2A1E;
+  --hero-bg:#0E2A1E; --hero-fg:#F3EFE3; --hero-muted:#9DB8AA;
+  --note-bg:#2E2614; --note-line:#C9A14A; --note-fg:#E8CF8E;
+  --good:#4FB283; --warn:#D7A24C; --bad:#D56A55; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --paper:#15171A; --surface:#1D2023; --ink:#ECE7DA; --ink-2:#C9C3B4; --ink-3:#9A9486; --line:#3C3F3A; --line-soft:#2B2E2A;
+  --brand:#4FB283; --brand-light:#6CC79A; --brand-tint:#1B3328; --brand-deep:#0E2A1E;
+  --hero-bg:#0E2A1E; --hero-fg:#F3EFE3; --hero-muted:#9DB8AA;
+  --note-bg:#2E2614; --note-line:#C9A14A; --note-fg:#E8CF8E;
+  --good:#4FB283; --warn:#D7A24C; --bad:#D56A55; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.25;text-wrap:balance;margin:0}
+h2{font-size:clamp(24px,3.2vw,32px);max-width:24em}
+h3{font-size:18px;margin-block:28px 10px}
+p{margin:0 0 12px}
+ul,ol{margin:0 0 12px;padding-left:1.3em}
+li{margin-bottom:5px}
+strong{font-weight:600}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);font-weight:600;margin-bottom:12px}
+.eyebrow b{font-family:var(--display);font-size:15px;letter-spacing:.04em;margin-right:8px}
+.lead{font-size:17px;color:var(--ink-2);max-width:38em;margin-block:14px 8px}
+.muted{color:var(--ink-3)}
+.project-purpose{margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--line-soft)}
+.project-purpose .lead{max-width:48em;margin-block:0 12px}
+.purpose-line{margin:0;font-size:18px;color:var(--brand)}
+.purpose-work{margin:16px 0 0;max-width:48em;color:var(--ink-2)}
+.detail-table{margin-top:20px;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding-block:14px}
+.detail-table summary{cursor:pointer;color:var(--brand);font-weight:600}
+.detail-table summary:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
+.detail-table[open] summary{margin-bottom:12px}
+.cap{font-size:13.5px;color:var(--ink-3);margin-top:8px}
+section{padding-block:56px;border-top:1px solid var(--line-soft)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:20px}
+.cols>*{min-width:0}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+
+/* 顶栏 */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line-soft)}
+.top .wrap{display:flex;align-items:center;gap:16px;height:52px}
+.top .brand{font-family:var(--display);font-weight:700;white-space:nowrap;font-size:15px}
+.top nav{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;display:flex;gap:4px}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a{white-space:nowrap;font-size:13px;color:var(--ink-3);padding:6px 9px;border-radius:6px}
+.top nav a:hover{background:var(--brand-tint);color:var(--brand);text-decoration:none}
+
+/* 封面 */
+.hero{background:var(--hero-bg);color:var(--hero-fg);padding-block:72px 64px;border-top:0}
+.hero .eyebrow{color:var(--hero-muted)}
+.hero h1{font-size:clamp(30px,5vw,50px);max-width:16em;font-weight:700}
+.hero .lead{color:var(--hero-muted);font-size:18px;max-width:34em;margin-top:22px}
+
+/* 表格 */
+.tbl{overflow-x:auto;margin-top:18px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:560px}
+th{text-align:left;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 12px;border-bottom:1.5px solid var(--line)}
+td{padding:10px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.55}
+td:first-child{font-weight:600;white-space:nowrap}
+
+/* 卡片与小件 */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
+.card h3{margin-top:10px}
+.card p:last-child,.card ul:last-child{margin-bottom:0}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--brand-tint);color:var(--brand);letter-spacing:.02em;white-space:nowrap}
+.pill.warn{background:var(--note-bg);color:var(--note-fg)}
+.pill.hu{background:transparent;border:1px dashed var(--ink-3);color:var(--ink-2)}
+.kv{display:grid;grid-template-columns:7em 1fr;gap:6px 14px;margin:0;font-size:14.5px}
+.kv dt{color:var(--ink-3);font-weight:500}
+.kv dd{margin:0}
+.grid-el{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:16px}
+.grid-el div{border:1px solid var(--line-soft);border-radius:8px;padding:10px 12px;font-size:13.5px;background:var(--surface);min-width:0}
+.grid-el b{display:block;font-size:14px;margin-bottom:2px}
+.num{font-variant-numeric:tabular-nums}
+.problems{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.problems>div{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.problems .k{font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:8px}
+.problems p{font-size:14.5px;margin-bottom:10px}
+.problems .ans{font-size:13.5px;color:var(--brand);border-top:1px dashed var(--line);padding-top:8px;margin:0}
+.problems .ans::before{content:"系统的回答 · ";font-weight:700}
+@media (max-width:760px){.problems{grid-template-columns:1fr}}
+
+/* 架构图 */
+figure{margin:22px 0 0}
+figcaption{font-size:13.5px;color:var(--ink-3);margin-top:10px;max-width:48em}
+.diagram{overflow-x:auto;margin-top:22px}
+.diagram svg{display:block;min-width:640px;width:100%;height:auto}
+.diagram text{font-family:var(--body);fill:var(--ink)}
+.diagram .q{fill:var(--ink-3)}
+.diagram .box{fill:var(--surface);stroke:var(--line);stroke-width:1.25}
+.diagram .box.ag{fill:var(--brand-tint);stroke:var(--brand);stroke-width:1.5}
+.diagram .box.pg{fill:var(--note-bg);stroke:var(--note-line);stroke-width:1.5}
+.diagram .box.hu{fill:var(--paper);stroke:var(--ink-2);stroke-width:1.5;stroke-dasharray:5 3}
+.diagram .box.ex{fill:var(--surface);stroke:var(--line);stroke-width:1.25}
+.diagram .box.kb{fill:var(--surface);stroke:var(--brand);stroke-width:2.5}
+.diagram .ln{fill:none;stroke:var(--line);stroke-width:1.25}
+.diagram .ring{fill:none;stroke:var(--ink-3);stroke-width:1.5}
+.diagram .dash{stroke-dasharray:5 4}
+.diagram .chev{fill:var(--surface);stroke:var(--brand);stroke-width:1.5}
+.diagram .gate{fill:var(--brand-tint);stroke:none}
+.diagram .gt{fill:var(--brand);font-weight:600}
+.diagram .callout{fill:var(--brand-tint);stroke:var(--brand);stroke-width:1}
+.diagram .ct{fill:var(--brand);font-weight:600}
+.diagram .node{cursor:pointer;outline:none}
+.diagram .node rect{transition:stroke-width .15s}
+.diagram .node:hover rect,.diagram .node.on rect,.diagram .node:focus-visible rect{stroke-width:3}
+.diagram .node.on text:first-of-type{text-decoration:underline;text-underline-offset:3px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:13px;color:var(--ink-3)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block;border:1.5px solid var(--line);background:var(--surface)}
+.legend .lg-ag{background:var(--brand-tint);border-color:var(--brand)}
+.legend .lg-pg{background:var(--note-bg);border-color:var(--note-line)}
+.legend .lg-hu{background:var(--paper);border:1.5px dashed var(--ink-2)}
+.legend .lg-kb{border:2.5px solid var(--brand)}
+.legend .lg-dash{width:24px;height:0;border:0;border-top:1.5px dashed var(--ink-3);border-radius:0;background:none}
+
+/* 环节说明弹窗 */
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(20,24,20,.55)}
+.modal[hidden]{display:none!important}
+.mbox{width:min(640px,100%);max-height:min(82vh,760px);overflow:auto;background:var(--surface);color:var(--ink);border:1px solid var(--brand);border-radius:14px;padding:22px 26px 20px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.np-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.np-head .np-num{font-family:var(--display);font-size:30px;color:var(--brand);font-weight:700;line-height:1}
+.np-head b{font-family:var(--display);font-size:22px}
+.np-head .x{margin-left:auto;font:inherit;font-size:20px;line-height:1;border:0;background:transparent;color:var(--ink-3);cursor:pointer;padding:4px 8px;border-radius:6px}
+.np-head .x:hover{color:var(--ink);background:var(--brand-tint)}
+.np-head .x:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.np-kv{grid-template-columns:6.5em 1fr;font-size:15px;gap:10px 16px}
+.np-foot{display:flex;align-items:center;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.np-foot .sp{flex:1;font-size:12.5px;color:var(--ink-3)}
+.np-nav{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.np-nav button{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);padding:4px 10px;border-radius:999px;cursor:pointer}
+.np-nav button.on,.np-nav button:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-tint)}
+.np-nav button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+/* 审批演示 */
+.demo{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.demo-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line-soft);background:var(--paper)}
+.demo-head .t{font-weight:600}
+.demo-stats{display:flex;gap:16px;font-size:13px;color:var(--ink-3);flex:1;flex-wrap:wrap}
+.demo-stats b{color:var(--ink);font-size:15px}
+.btn{font:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 14px;border-radius:7px;cursor:pointer}
+.btn:hover{border-color:var(--brand);color:var(--brand)}
+.btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.pri:hover{background:var(--brand-light);color:#fff}
+.btn.sm{padding:5px 11px;font-size:13px}
+.acards{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media (max-width:760px){.acards{grid-template-columns:1fr}}
+.acard{padding:18px 20px;border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft);min-width:0}
+.acard header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.acard header strong{flex:1;font-size:15px}
+.acard .money{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.acard .kv{font-size:13.5px;grid-template-columns:5.5em 1fr}
+.acard footer{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.acard .reason{margin-top:10px}
+.acard textarea{width:100%;font:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:7px;padding:8px 10px;background:var(--paper);color:var(--ink);resize:vertical;min-height:58px}
+.acard .done{margin-top:12px;padding:10px 12px;border-radius:7px;background:var(--brand-tint);color:var(--brand);font-size:13.5px;font-weight:600}
+.acard .done.r{background:var(--note-bg);color:var(--note-fg)}
+.acard.auto{background:var(--paper)}
+.demo-bar{height:8px;background:var(--line-soft);margin:0 18px 6px}
+.demo-bar div{height:100%;background:var(--brand);width:0;transition:width .3s}
+.demo-foot{padding:8px 18px 14px;font-size:13px;color:var(--ink-3)}
+
+.foot{padding-block:36px 60px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line-soft)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div class="brand">Ai4Ads</div>
+  <nav>
+    <a href="#p0">引言</a><a href="#p1">业务架构</a><a href="#p2">怎么落地</a><a href="#p3">怎么验证</a><a href="#p4">怎么积累</a><a href="#p5">数据安全</a><a href="#p6">模型与系统</a>
+  </nav>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Ai4Ads · 客户方案 · 2026 年 10 月</div>
+  <h1>让投手经验成为团队可复用的投放能力</h1>
+  <p class="lead">从日常判断到持续复盘：AI 怎样帮投手发现问题、提出建议，团队怎样把经验留下来，并始终掌握预算与执行权限。</p>
+</div></header>
+
+<section id="p0"><div class="wrap">
+  <div class="eyebrow"><b>00</b>引言</div>
+  <div class="project-purpose">
+    <p class="lead">Ai4Ads 要把资深投手判断问题、选择动作和复盘结果的方法，逐步变成团队可以复用的能力，让更多账户得到持续、稳定的管理。</p>
+    <p class="purpose-line"><strong>给经验以标准，把能力沉淀为SOP。</strong></p>
+    <p class="purpose-work">先从日常投放的三件事开始：<strong>更快发现问题、提出更有依据的素材方向、判断什么时候该调整和等待。</strong>要做到这些，系统需要同时掌握账户数据、投手经验和业务约束。</p>
+  </div>
+  <h2>AI 进真实业务，最难的不是模型本身</h2>
+  <p class="lead">通用模型已经很强，但放进一个真实的投放业务，它会在三处出问题。整套系统设计，都是围绕这三处做的。</p>
+  <div class="problems">
+    <div>
+      <div class="k">知道的太少</div>
+      <p>模型不知道这家客户的毛利、库存和销售跟进，不知道这个账户上周发生了什么，更不知道资深投手为什么今天选择不动。通用能力再强，缺的是这家企业的知识库和这群行业专家的方法。</p>
+      <p class="ans">把账户数据、业务规则和投手方法整理成统一的知识库，让模型有据可查。</p>
+    </div>
+    <div>
+      <div class="k">约束的太少</div>
+      <p>如果只把模型接到操作接口，却没有明确权限，就可能出现不该执行的动作。谁允许它改预算，超额时谁拦截，改错后怎么处理？方案和素材也需要明确标准，才能判断是否可用。</p>
+      <p class="ans">所有操作先检查权限、额度和执行条件，再由统一入口执行；方案和素材按约定标准检查，不合格就退回修改。</p>
+    </div>
+    <div>
+      <div class="k">幻觉</div>
+      <p>模型会把「看起来合理」当成「确实如此」：引用一个不存在的数字，把回传延迟当成效果下滑，把接口返回成功当成优化完成。</p>
+      <p class="ans">每条建议注明数据来源与时间，执行后读取平台实际配置核对，关键动作由人审批。</p>
+    </div>
+  </div>
+  <p class="cap">下一张图就是这三件事怎么落进一次决策。</p>
+</div></section>
+
+<section id="p1"><div class="wrap">
+  <div class="eyebrow"><b>01</b>业务架构</div>
+  <h2>一次决策的七个环节</h2>
+  <p class="lead">图 1 是整个系统。外圈七步是一次决策走过的路，颜色标出每一步由谁完成：绿色是大模型，黄色是程序，虚线框是人。中间的知识库保存投手的方法与案例，供每次判断参考。策略卡就是一张判断方法卡，写清何时适用、依据什么、可以做什么。“回读”是执行后重新读取平台配置，核对是否按预期生效。点图中任一环节，可以查看具体说明。</p>
+  <figure>
+    <div class="diagram"><svg viewBox="0 0 960 676" role="img" aria-label="业务架构：监测、诊断、出方案、校验、审批、执行与回读、复盘七个环节组成一次决策的回路，颜色区分 AI、程序和人；审批原因与复盘结果进入中间的知识库；L2、L3 中已验证且事先授权的动作可自动执行，其他动作仍须审批；所有执行均须校验并确认授权">
+      <defs>
+        <marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--line)"/></marker>
+        <marker id="m1r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--ink-3)"/></marker>
+      </defs>
+      <g class="ring">
+        <path d="M290 172 H360" marker-end="url(#m1r)"/>
+        <path d="M520 172 H590" marker-end="url(#m1r)"/>
+        <path d="M750 180 H770 V292 H790" marker-end="url(#m1r)"/>
+        <path d="M840 324 V412 H750" marker-end="url(#m1r)"/>
+        <path d="M590 412 H520" marker-end="url(#m1r)"/>
+        <path d="M360 412 H290" marker-end="url(#m1r)"/>
+        <path d="M130 412 H100 V172 H130" marker-end="url(#m1r)"/>
+        <path class="dash" d="M915 324 V476 H480 V444" marker-end="url(#m1r)"/>
+      </g>
+      <g class="ln">
+        <path d="M210 100 V140" marker-end="url(#m1)"/>
+        <path d="M670 100 V140" marker-start="url(#m1)" marker-end="url(#m1)"/>
+        <path d="M480 100 V118 H555 V250" marker-end="url(#m1)"/>
+        <path d="M865 100 V260" marker-end="url(#m1)"/>
+        <path d="M570 282 H700 V204" marker-end="url(#m1)"/>
+        <path d="M640 380 V306 H570" marker-end="url(#m1)"/>
+        <path d="M210 380 V292 H380" marker-end="url(#m1)"/>
+        <path d="M400 444 V496" marker-start="url(#m1)" marker-end="url(#m1)"/>
+      </g>
+      <g font-size="13" text-anchor="middle">
+        <rect class="box ex" x="100" y="40" width="220" height="60" rx="8"/><text x="210" y="64" font-weight="600">外部数据</text><text class="q" x="210" y="84" font-size="11.5">各平台报表 · 经营数据 · 社媒信号</text>
+        <rect class="box hu" x="400" y="40" width="160" height="60" rx="8"/><text x="480" y="64" font-weight="600">投手经验</text><text class="q" x="480" y="84" font-size="11.5">访谈整理判断方法</text>
+        <rect class="box ex" x="590" y="40" width="160" height="60" rx="8"/><text x="670" y="64" font-weight="600">生成模型</text><text class="q" x="670" y="84" font-size="11.5">图 · 视频 · 文案</text>
+        <rect class="box hu" x="790" y="40" width="150" height="60" rx="8"/><text x="865" y="64" font-weight="600">客户目标与授权</text><text class="q" x="865" y="84" font-size="11.5">额度 · 等级 · 品牌规范</text>
+        <g class="node" data-node="1" tabindex="0" role="button" aria-label="① 监测，点击查看说明"><rect class="box pg" x="130" y="140" width="160" height="64" rx="8"/><text x="210" y="166" font-weight="600">① 监测</text><text class="q" x="210" y="187" font-size="11.5">巡检 · 数据成熟度 · 信号</text></g>
+        <g class="node" data-node="2" tabindex="0" role="button" aria-label="② 诊断，点击查看说明"><rect class="box ag" x="360" y="140" width="160" height="64" rx="8"/><text x="440" y="166" font-weight="600">② 诊断</text><text class="q" x="440" y="187" font-size="11.5">诊断 Agent · 素材 Agent</text></g>
+        <g class="node" data-node="3" tabindex="0" role="button" aria-label="③ 出方案，点击查看说明"><rect class="box ag" x="590" y="140" width="160" height="64" rx="8"/><text x="670" y="166" font-weight="600">③ 出方案</text><text class="q" x="670" y="187" font-size="11.5">主 Agent · 创意 Agent</text></g>
+        <g class="node" data-node="4" tabindex="0" role="button" aria-label="④ 校验，点击查看说明"><rect class="box pg" x="790" y="260" width="150" height="64" rx="8"/><text x="865" y="286" font-weight="600">④ 校验</text><text class="q" x="865" y="307" font-size="11.5">数值 · 预算 · 授权</text></g>
+        <g class="node" data-node="kb" tabindex="0" role="button" aria-label="知识库，点击查看说明"><rect class="box kb" x="380" y="250" width="190" height="84" rx="10"/><text x="475" y="282" font-weight="700" font-size="15">知识库</text><text class="q" x="475" y="304" font-size="11.5">策略卡 · 决策案例</text><text class="q" x="475" y="322" font-size="11.5">素材标签 · 审批原因</text></g>
+        <g class="node" data-node="5" tabindex="0" role="button" aria-label="⑤ 审批，点击查看说明"><rect class="box hu" x="590" y="380" width="160" height="64" rx="8"/><text x="670" y="406" font-weight="600">⑤ 审批</text><text class="q" x="670" y="427" font-size="11.5">投手审批卡 · 素材审核</text></g>
+        <g class="node" data-node="6" tabindex="0" role="button" aria-label="⑥ 执行与回读，点击查看说明"><rect class="box pg" x="360" y="380" width="160" height="64" rx="8"/><text x="440" y="406" font-weight="600">⑥ 执行与回读</text><text class="q" x="440" y="427" font-size="11.5">防重复执行 · 核对 · 留痕</text></g>
+        <g class="node" data-node="7" tabindex="0" role="button" aria-label="⑦ 复盘，点击查看说明"><rect class="box ag" x="130" y="380" width="160" height="64" rx="8"/><text x="210" y="406" font-weight="600">⑦ 复盘</text><text class="q" x="210" y="427" font-size="11.5">复盘 Agent · 投手确认</text></g>
+        <rect class="box ex" x="280" y="496" width="300" height="90" rx="8"/><text x="430" y="518" font-weight="600">广告平台</text><text class="q" x="430" y="538" font-size="11.5">Meta · Google Ads · X</text><text class="q" x="430" y="555" font-size="11.5">TikTok · Microsoft Advertising</text><text class="q" x="430" y="574" font-size="11.5">读取平台数据 · 受控执行操作</text>
+      </g>
+      <g class="q" font-size="11.5">
+        <text x="325" y="164" text-anchor="middle">事件</text>
+        <text x="774" y="236">行动方案</text>
+        <text x="871" y="190">授权</text>
+        <text x="846" y="372">需审批</text>
+        <text x="555" y="404" text-anchor="middle">批准</text>
+        <text x="325" y="404" text-anchor="middle">到期</text>
+        <text x="94" y="296" text-anchor="end">下一轮</text>
+        <text x="700" y="468" text-anchor="middle">已授权范围内自动（L2 / L3）</text>
+        <text x="216" y="124">读取</text>
+        <text x="676" y="124">调用</text>
+        <text x="561" y="236">整理策略卡</text>
+        <text x="706" y="250">检索</text>
+        <text x="646" y="352">修改与否决原因</text>
+        <text x="216" y="346">案例 · 验证记录</text>
+        <text x="406" y="490">写入 · 回读</text>
+        <text x="940" y="22" text-anchor="end">点击环节查看说明</text>
+      </g>
+      <g font-size="12" text-anchor="middle">
+        <rect class="callout" x="26" y="616" width="300" height="36" rx="18"/><text class="ct" x="176" y="639">AI 主要负责诊断 · 出方案 · 复盘</text>
+        <rect class="callout" x="338" y="616" width="300" height="36" rx="18"/><text class="ct" x="488" y="639">人负责定目标 · 授权审批 · 复盘</text>
+        <rect class="callout" x="650" y="616" width="300" height="36" rx="18"/><text class="ct" x="800" y="639">执行前必经校验与授权确认</text>
+      </g>
+    </svg></div>
+    <div class="legend">
+      <span><i class="lg-ag"></i>AI 助手（Agent）：诊断、建议、复盘</span>
+      <span><i class="lg-pg"></i>程序：巡检、硬校验、执行</span>
+      <span><i class="lg-hu"></i>人：输入与复核</span>
+      <span><i></i>外部能力</span>
+      <span><i class="lg-kb"></i>知识库</span>
+      <span><i class="lg-dash"></i>已验证且事先授权的动作可自动执行</span>
+    </div>
+    <figcaption>图 1 · 业务架构。外圈七个环节是一次决策，颜色表示由谁完成；中间的知识库接收审批原因和复盘结果，再供下一次出方案检索。</figcaption>
+  </figure>
+
+  <h3 id="rules-and-judgment">规则限定能做什么，AI 判断现在适合做什么</h3>
+  <p>规则守住预算、权限和禁止动作；AI 结合账户现状与投手经验，解释异常、比较方案，并说明建议的依据。</p>
+  <div class="tbl"><table>
+    <tr><th>规则负责</th><th>AI 负责</th></tr>
+    <tr><td>明确预算、权限和禁止动作</td><td>结合目标、近期变化与数据，判断问题可能出在哪里</td></tr>
+    <tr><td>限定哪些动作允许执行</td><td>比较允许的动作，建议此刻更适合调整、换素材，还是继续观察</td></tr>
+    <tr><td>条件不满足就拦截</td><td>指出还缺什么证据，解释为什么现在可以动、或者应该等</td></tr>
+  </table></div>
+  <p class="cap">面对新情况，AI 可以提出待验证的建议；先由投手确认，再在授权范围内小规模验证。任何建议都不能绕过预算与权限检查；需要审批的动作，获批后才执行。</p>
+
+  <div class="modal" id="node-modal" hidden role="dialog" aria-modal="true" aria-labelledby="np-title">
+    <div class="mbox">
+      <div class="np-head"><span class="np-num" id="np-num">①</span><b id="np-title">监测</b><span class="pill warn" id="np-who">程序</span><button class="x" type="button" id="np-close" aria-label="关闭">×</button></div>
+      <dl class="kv np-kv">
+        <dt>做什么</dt><dd id="np-what"></dd>
+        <dt>兜底</dt><dd id="np-fallback"></dd>
+        <dt>回应的难题</dt><dd id="np-why"></dd>
+      </dl>
+      <div class="np-foot"><button class="btn sm" type="button" id="np-prev">◀ 上一个</button><button class="btn sm pri" type="button" id="np-next">下一个 ▶</button><span class="sp">Esc 关闭 · 点图中任一环节可直接跳转</span></div>
+      <div class="np-nav" id="np-nav"></div>
+    </div>
+  </div>
+
+  <h3>自动化不是一个开关，按客户、动作、情境逐级放开</h3>
+  <p>每一类动作在每个客户、每种情境下单独有一个等级。升级要同时看该类动作的审批记录、实际效果和执行安全；审批通过率是依据之一。开新市场、大幅扩量、改变核心目标，始终由有权限的人确认。需要审批的动作，无人审批时不执行；事先授权的停投类安全动作可以自动执行。</p>
+  <div class="tbl"><table>
+    <tr><th>等级</th><th>系统做什么</th><th>人做什么</th><th>升级条件</th></tr>
+      <tr><td>L1 全部审批</td><td>巡检、诊断、生成建议与草稿；经营调整逐项审批，安全停投按事先授权处理</td><td>逐卡审批，修改或否决时说明原因</td><td>原样通过率达约定阈值，审批后执行的效果达到约定基线，零越权且执行结果核对一致</td></tr>
+    <tr><td>L2 额度内自动</td><td>已验证策略下、授权额度与幅度内的动作自动执行；超限转审批</td><td>审批超限动作与例外</td><td>效果不低于约定的人工基线，需撤回的动作比例低于约定值</td></tr>
+    <tr><td>L3 常态自动</td><td>扩大已验证、已授权的日常动作范围；超限、新情境和关键动作仍转人工</td><td>审批例外；设定目标与额度；定期复核</td><td>效果持续达标，零越权</td></tr>
+  </table></div>
+
+  <h3>⑤ 审批卡长这样</h3>
+  <p class="muted">示例账户与数据。一类、二类、三类分别表示本方案中的稳定投放、验证放量、小额测试阶段，不是平台统一分类。每张卡回答六件事：发现了什么、依据是什么、建议怎么改、动多少钱、为什么现在、什么时候看结果。修改或否决必须填原因，原因进知识库；原样通过率是升到 L2 的依据之一。</p>
+  <div class="demo">
+    <div class="demo-head">
+      <div class="t">今日待办 · 4 个示例账户</div>
+      <div class="demo-stats"><span>原样通过 <b id="st-pass" class="num">0</b></span><span>修改后通过 <b id="st-edit" class="num">0</b></span><span>否决 <b id="st-rej" class="num">0</b></span><span>原样通过率 <b id="st-rate" class="num">—</b></span></div>
+      <button class="btn sm" id="demo-reset" type="button">重置</button>
+    </div>
+    <div class="acards" id="demo-cards"></div>
+    <div class="demo-bar"><div id="demo-progress"></div></div>
+    <div class="demo-foot">进度条仅显示本轮示例的原样通过率。真实升级要按客户、动作与情境分别统计，并同时验证效果和安全；本演示不操作真实账户，也不保存审批记录。</div>
+  </div>
+
+  <div class="cols">
+    <div>
+      <h3>Agent 怎么分工</h3>
+      <p>不同 AI 助手分别负责诊断、素材分析、创意和复盘，由主助手汇总成一份建议。建议有冲突时，按已确认的方法与权限处理，无法确定就交给投手。所有助手共用同一套预算记录和受控执行入口。</p>
+    </div>
+    <div>
+      <h3>平台怎么接</h3>
+      <p>平台按业务优先级逐个接入，先读取数据，验证后再开放已授权的操作。判断方法、授权流程和工作台可以复用；指标口径、账户结构和操作限制按各平台的实际情况调整。</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="p2"><div class="wrap">
+  <div class="eyebrow"><b>02</b>怎么落地</div>
+  <h2>工程师和投手一起，把经验变成可使用、可验证的系统</h2>
+  <p class="lead">从选定的账户和决策场景开始，把投手的方法整理出来，放进真实工作流程，再用试点结果决定哪些能力值得扩大使用。首期形成三类可见成果：</p>
+  <div class="grid-el" id="pilot-deliverables">
+    <div><b>一套方法与案例</b>整理好的判断方法、适用条件、行动步骤和复盘案例，形成团队可复用的 SOP。</div>
+    <div><b>一个可运行的工作流程</b>在选定账户上完成巡检、建议、审批执行和到期复盘，每一步有依据、有记录。</div>
+    <div><b>一份试点结果</b>说明哪些能力有效、节省了哪些工作、哪些判断仍需改进，以及下一步适合扩大到哪里。</div>
+  </div>
+  <div class="cols">
+    <div class="card">
+      <div class="pill">Ontology · 本体</div>
+      <h3>数据、经验和业务规则使用同一套定义</h3>
+      <p>同一个账户、同一个指标和同一条规则，在诊断、执行与复盘中含义一致。这套共同定义，就是本体。</p>
+    </div>
+    <div class="card">
+      <div class="pill">工程师参与一线共建 · FDE</div>
+      <h3>工程师和投手一起，把方法用到真实账户</h3>
+      <p>通过访谈、方法整理、建议评审和结果复盘，把系统逐步建进投手的日常工作。每个阶段用约定的成果和验证结果判断是否进入下一步。</p>
+    </div>
+  </div>
+  <details class="detail-table">
+    <summary>展开：数据、经验和业务规则如何统一定义</summary>
+  <div class="tbl"><table>
+    <tr><th>本体层</th><th>在这个系统里是什么</th></tr>
+    <tr><td>对象与关系</td><td>广告主、账户、Campaign / 广告组 / 广告、层级（一类 / 二类 / 三类）、素材、转化事件、策略卡、决策案例</td></tr>
+    <tr><td>属性与语义标签</td><td>口径、归因窗口、数据成熟度、投放阶段、素材标签与疲劳状态</td></tr>
+    <tr><td>规则与动作流程</td><td>策略卡的必要证据与不执行条件、行动方案的固定结构、七个环节的流转</td></tr>
+    <tr><td>权限审批与审计</td><td>授权等级 L1–L3、额度与幅度、受控执行入口、行动记录、按广告主隔离</td></tr>
+    <tr><td>指标与结果回读</td><td>回读状态、观察窗口、效果比较、各类动作的通过率</td></tr>
+  </table></div>
+  </details>
+
+  <h3>五个阶段，达到约定条件再进入下一步</h3>
+  <figure>
+    <div class="diagram"><svg viewBox="0 0 960 362" role="img" aria-label="工程落地：业务调研、投手沟通、梳理与开发、试运营、上线五个阶段从左到右推进，每个阶段有出口条件；试运营起按 L1 全部审批运行，上线阶段仅对满足条件的动作逐步升级；先接第一个平台，上线后其余平台逐个接入；投手在沟通、开发、试运营与上线阶段分别参与">
+      <g font-size="13" text-anchor="middle">
+        <polygon class="chev" points="26,24 184,24 198,54 184,84 26,84"/><text x="108" y="50" font-weight="600">① 业务调研</text><text class="q" x="108" y="70" font-size="11.5">约 2 周</text>
+        <polygon class="chev" points="210,24 368,24 382,54 368,84 210,84 224,54"/><text x="303" y="50" font-weight="600">② 投手沟通</text><text class="q" x="303" y="70" font-size="11.5">约 2–3 周，可与调研并行</text>
+        <polygon class="chev" points="394,24 552,24 566,54 552,84 394,84 408,54"/><text x="487" y="50" font-weight="600">③ 梳理与开发</text><text class="q" x="487" y="70" font-size="11.5">约 6–8 周</text>
+        <polygon class="chev" points="578,24 736,24 750,54 736,84 578,84 592,54"/><text x="671" y="50" font-weight="600">④ 试运营</text><text class="q" x="671" y="70" font-size="11.5">约 8–12 周</text>
+        <polygon class="chev" points="762,24 920,24 934,54 920,84 762,84 776,54"/><text x="855" y="50" font-weight="600">⑤ 上线</text><text class="q" x="855" y="70" font-size="11.5">按数据逐级放开</text>
+      </g>
+      <g font-size="12">
+        <text x="34" y="114">· 账户与数据权限盘点</text><text x="34" y="134">· 业务目标与可用数据</text><text x="34" y="154">· 工时与效果基线</text>
+        <text x="218" y="114">· 访谈资深投手</text><text x="218" y="134">· 梳理五类日常判断</text><text x="218" y="154">· 首批策略卡草案</text>
+        <text x="402" y="114">· 统一数据、规则与权限</text><text x="402" y="134">· 授权、预算与执行入口</text><text x="402" y="154">· 平台读写与审批卡</text>
+        <text x="586" y="114">· 3–5 个试点账户</text><text x="586" y="134">· 审批后执行与复盘</text><text x="586" y="154">· 积累案例、校准策略卡</text>
+        <text x="770" y="114">· 已验证动作升 L2</text><text x="770" y="134">· 达标后扩大自动化范围</text><text x="770" y="154">· 其余平台逐个接入</text>
+      </g>
+      <g font-size="11.5" text-anchor="middle">
+        <rect class="gate" x="26" y="172" width="172" height="28" rx="14"/><text class="gt" x="112" y="190">出口 · 基线口径确认</text>
+        <rect class="gate" x="210" y="172" width="172" height="28" rx="14"/><text class="gt" x="296" y="190">出口 · 投手认可草案</text>
+        <rect class="gate" x="394" y="172" width="172" height="28" rx="14"/><text class="gt" x="480" y="190">出口 · 执行与核对可靠</text>
+        <rect class="gate" x="578" y="172" width="172" height="28" rx="14"/><text class="gt" x="664" y="190">出口 · 效果与工时达标、零越权</text>
+        <rect class="gate" x="762" y="172" width="172" height="28" rx="14"/><text class="gt" x="848" y="190">出口 · 效果持续达标、零越权</text>
+      </g>
+      <g font-size="12" text-anchor="middle">
+        <text class="q" x="566" y="241" text-anchor="end">授权等级</text>
+        <rect class="box ag" x="578" y="222" width="172" height="30" rx="6"/><text x="664" y="241">L1 全部审批</text>
+        <rect class="box ag" x="762" y="222" width="172" height="30" rx="6"/><text x="848" y="241">L2 额度内自动 → L3</text>
+        <text class="q" x="382" y="288" text-anchor="end">接入平台</text>
+        <rect class="box ex" x="394" y="264" width="356" height="40" rx="6"/><text x="572" y="288">第一个平台</text>
+        <rect class="box ex" x="762" y="264" width="172" height="40" rx="6"/><text x="848" y="288">其余平台逐个接入</text>
+        <text class="q" x="198" y="335" text-anchor="end">投手参与</text>
+        <rect class="box hu" x="210" y="316" width="172" height="30" rx="6"/><text x="296" y="335">访谈、确认草案</text>
+        <rect class="box hu" x="394" y="316" width="172" height="30" rx="6"/><text x="480" y="335">每周评审策略卡</text>
+        <rect class="box hu" x="578" y="316" width="172" height="30" rx="6"/><text x="664" y="335">每周约 4–6 小时审批</text>
+        <rect class="box hu" x="762" y="316" width="172" height="30" rx="6"/><text x="848" y="335">审批超限与例外</text>
+      </g>
+    </svg></div>
+    <figcaption>图 2 · 实施路径。先在一个平台、少量账户上验证，达到约定条件后再扩大范围。周期、账户数与投手投入为初步估算，立项时结合数据条件和首期范围确认。</figcaption>
+  </figure>
+  <p class="cap">第一条要跑通的链路：账户巡检 → 问题诊断 → 审批后有限调整 → 执行核对 → 到期复盘。它同时验证三件事：投手的经验能不能复制，系统执行可不可靠，客户有没有实际受益。</p>
+
+  <h3>投手经验最集中的五类日常判断</h3>
+  <p>首批判断方法卡（下称策略卡）从这五类场景整理，写清依据、适用条件、可选动作和观察时间。</p>
+  <div class="tbl"><table>
+    <tr><th>判断场景</th><th>典型决策</th><th>投手经验所在</th><th>系统做什么</th></tr>
+    <tr><td>素材生命周期</td><td>何时上新、测试多久、哪条放量、哪条淘汰</td><td>对疲劳、角度、格式的判断</td><td>素材登记与版本、表现诊断、疲劳识别、放量与淘汰建议</td></tr>
+    <tr><td>预算放量与学习期</td><td>放量幅度、频率、何时不动</td><td>判断调整对学习状态的影响，不追短期波动</td><td>幅度与频率规则、不执行条件、观察窗口</td></tr>
+    <tr><td>账户结构</td><td>整合与拆分、预算分配方式、出价上限</td><td>按阶段与预算规模选结构</td><td>结构诊断与建议，人工执行</td></tr>
+    <tr><td>信号与数据健康</td><td>转化回传质量、归因窗口、回传延迟</td><td>知道哪些数字还不能信</td><td>巡检与告警，异常时冻结自动调整</td></tr>
+    <tr><td>异常处置</td><td>拒审、账户受限、消耗异常</td><td>先排除什么、何时停投</td><td>事先授权的停投类安全动作自动执行</td></tr>
+  </table></div>
+
+  <h3>需要投入什么</h3>
+  <div class="grid-el">
+    <div><b>账户与数据授权</b>平台资产授权、转化回传访问；能提供经营数据的广告主名单与接入方式</div>
+    <div><b>资深投手的时间</b>试运营期每周约 4 到 6 小时，整理策略卡与审批；修改或否决时写原因</div>
+    <div><b>一位决策人</b>能拍板授权额度、验收口径与升级阈值</div>
+    <div><b>试点账户</b>建议 3 到 5 个真实账户，覆盖稳定投放、验证放量和小额测试等阶段；以平台数据起步，经营数据按可用情况接入</div>
+    <div><b>品牌与合规规范</b>素材规范、禁用表达、各广告主的品牌要求</div>
+  </div>
+</div></section>
+
+<section id="p3"><div class="wrap">
+  <div class="eyebrow"><b>03</b>怎么验证</div>
+  <h2>怎么证明这套系统值得继续投入</h2>
+  <p class="lead">把现在的工作方式作为基线，在约定的账户和观察期内看三件事：投放效果能否保持稳定，重复工作能否减少，经过纠正后的判断能否进步。经营数据不足时，先验证平台可观测的结果，不把平台转化直接等同于真实利润。</p>
+  <div class="tbl"><table>
+    <tr><th>客户关心什么</th><th>怎么验证</th></tr>
+    <tr><td>投放效果是否稳定</td><td>按同一口径比较有效获客成本、成交价值或收益，确认效果不劣于同期投手基线。</td></tr>
+    <tr><td>投手是否更省时间</td><td>记录巡检、整理和重复判断的耗时，比较每万元消耗对应的人工分钟数是否下降。</td></tr>
+    <tr><td>系统是否判断得更好</td><td>用未参与经验整理的新案例，比较改进前后是否更少漏掉关键条件、是否更能说明调整或等待的依据，再结合实际试点结果判断。</td></tr>
+  </table></div>
+  <p style="margin-top:18px"><strong>安全是必须满足的底线：</strong>授权范围外执行次数为 0，执行结果与平台回读一致。</p>
+  <p>审批通过率说明建议是否被接受。是否学会了更好的判断，要看新案例和实际结果；是否可以自动执行，还要同时满足效果与安全条件。</p>
+  <details class="detail-table">
+    <summary>展开：试点开始前共同约定的验收口径</summary>
+    <p>共同确定指标、对照分组、允许的效果差异（非劣界限）、观察期，以及工时和判断质量的达标条件。判断质量由投手按同一标准评分，保留一批未用于整理经验的案例做比较。</p>
+    <p>效果按同期、同口径比较，不承诺 ROI 提升；验收规则在试点开始前写定，过程中不随结果调整。数据不够时结论为「证据不足」，继续观察后再判断。</p>
+  </details>
+</div></section>
+
+<section id="p4"><div class="wrap">
+  <div class="eyebrow"><b>04</b>怎么积累</div>
+  <h2>把一次纠正，变成下一次更好的判断</h2>
+  <p class="lead">投手修改或否决建议时，留下理由；复盘时，再把当时的情况、实际动作和后续结果连起来。经验因此能被下一次判断使用，也能被团队检查和改进。</p>
+  <h3>一个例子：订单成本下降，现在就该加预算吗</h3>
+  <p class="cap">以下为判断过程的示意案例，不是已取得的客户实绩。</p>
+  <div class="tbl"><table>
+    <tr><th>过程</th><th>发生什么、留下什么</th></tr>
+    <tr><td>AI 首次建议</td><td>看到订单成本下降，建议增加预算。</td></tr>
+    <tr><td>投手纠正</td><td>「昨天刚换素材，订单还太少，现在不能确定是稳定改善，先继续观察。」系统保留这次判断的条件和理由。</td></tr>
+    <tr><td>到期复盘</td><td>观察期结束后，核对成本、订单量和期间的其他变化，判断当时等待是否合适。有效和无效的判断都留下结果，避免只记成功案例。</td></tr>
+    <tr><td>再遇到相似情况</td><td>系统应主动检查近期改动、样本量和数据是否完整：证据不足就说明还要等什么；证据充分时，再比较是否加预算和调整幅度。</td></tr>
+  </table></div>
+  <p style="margin-top:18px">同样是成本下降，近期改动、订单量和回传完整性不同，建议也应不同。积累经验的价值，是让系统更会判断这些条件。</p>
+  <h3>经验怎样逐步变成团队能力</h3>
+  <div class="tbl"><table>
+    <tr><th>积累方式</th><th>带来的变化</th></tr>
+    <tr><td>先复用经验</td><td>把投手的理由和复盘结果整理成案例，下次出建议时参考。此时更新的是系统可用的知识，模型本身没有因此被重新训练。</td></tr>
+    <tr><td>再改进方法</td><td>把反复验证有效的判断条件整理进策略卡和 SOP，保留适用范围、版本和例外；投手确认、通过历史案例检查后再使用。</td></tr>
+    <tr><td>条件成熟后训练特定能力</td><td>案例质量和覆盖范围足够、需要改进的任务明确后，再考虑训练模型；用未参与训练的新案例和实际试点检验是否进步。</td></tr>
+  </table></div>
+  <p class="cap">案例积累、方法改进和模型训练是三个阶段。首期重点是把经验用起来并验证价值，后续是否训练模型由实际问题决定。</p>
+</div></section>
+
+<section id="p5"><div class="wrap">
+  <div class="eyebrow"><b>05</b>数据安全</div>
+  <h2>客户数据各自隔离，操作权限由程序把关</h2>
+  <p class="lead">以下作为系统建设与验收要求，具体部署方式、数据范围与保留期限在立项时确认。</p>
+  <div class="tbl"><table>
+    <tr><th>层面</th><th>怎么做</th></tr>
+    <tr><td>数据隔离</td><td>按广告主隔离数据、策略案例、预算账本与平台凭证；只有经授权提炼的通用方法可跨客户复用，原始案例、数据和客户专属策略各自隔离</td></tr>
+    <tr><td>凭证与写操作</td><td>凭证加密存储，平台权限按最小范围申请，投手、广告主、负责人分角色授权；系统只通过受控入口执行平台操作，额度检查和异常停止由程序强制</td></tr>
+    <tr><td>模型调用</td><td>仅发送任务必需字段，敏感信息脱敏，调用留痕；选择合同约定不将客户数据用于服务商通用模型训练的接口。客户专属模型训练另行明确授权和数据范围</td></tr>
+    <tr><td>审计与保留</td><td>访问与执行保留防篡改、可追溯的记录，能核对当时数据、策略版本和授权依据；按合同及适用要求保留，合作结束按约定导出、删除</td></tr>
+    <tr><td>部署与合规</td><td>可评估私有化部署，外部模型调用范围另行确认；生成素材上线前人工审核；只接入有权使用的数据源，并遵守平台接口与广告政策</td></tr>
+  </table></div>
+</div></section>
+
+<section id="p6"><div class="wrap">
+  <div class="eyebrow"><b>06</b>模型与系统</div>
+  <h2>模型可以升级，团队积累的方法和经验持续保留</h2>
+  <p class="lead">新模型可能带来更好的理解、诊断和创意能力。更换前，用约定案例和历史任务比较效果、稳定性与成本，验证后再切换；已经整理好的方法、案例和授权流程继续保留。</p>
+  <div class="cols">
+    <div class="card">
+      <div class="pill">持续评估新模型</div>
+      <h3>这些能力可以随模型改进</h3>
+      <ul>
+        <li>理解目标、诊断原因、组合策略、写创意需求、解释方案</li>
+        <li>每类任务使用哪个模型，按实际评测结果选择</li>
+        <li>生成模型也可以更换，素材仍按同一标准审核</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="pill hu">留在自己手里</div>
+      <h3>这些需要在业务中持续积累</h3>
+      <ul>
+        <li><strong>投手的方法与案例：</strong>怎么判断、什么时候不动、哪些方法在什么条件下有效</li>
+        <li><strong>客户的经营数据与真实目标：</strong>毛利、库存、销售跟进，以及这次到底想要什么</li>
+        <li><strong>对广告费负责的授权与问责：</strong>谁能决定、允许做什么、发生问题由谁处理</li>
+        <li><strong>持续验证：</strong>只能在真实账户上一轮轮验出来</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<footer class="foot"><div class="wrap">Ai4Ads · 客户方案 · 2026 年 10 月 · 页面内数据为示例，以立项文件为准</div></footer>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  // 架构图环节说明
+  const nodes={
+    '1':{num:'①',title:'监测',who:'程序',cls:'warn',what:'定时巡检消耗节奏、成本偏离、学习期、拒审与受限；检查数据新鲜度与回传是否正常；整理社媒与竞品信号。只读，不写平台。',fb:'达到事先约定的安全阈值时，提交停投请求；由执行入口校验授权后处理，并通知人。',why:'约束的太少：先知道数据能不能信、消耗有没有失控，再谈优化。'},
+    '2':{num:'②',title:'诊断',who:'Agent',cls:'',what:'诊断 Agent 解读异常、找原因，判断数据能不能信；素材 Agent 做表现诊断与疲劳识别。使用注明口径、来源和时间的账户数据。',fb:'数据不完整或证据不够时，不建议调整；说明缺少什么依据，以及何时复查。',why:'知道的太少 / 幻觉：诊断只能基于已确认的数据，证据不够就不下结论。'},
+    '3':{num:'③',title:'出方案',who:'Agent',cls:'',what:'主 Agent 结合账户目标与当前情况，参考策略卡和相似案例，比较可选动作，形成结构化建议：调整对象、原因、依据、预计影响、允许幅度、复盘时间。需要新素材时，创意 Agent 写创意需求、调用生成模型。',fb:'方案须说明事实依据、适用条件和不确定性。新情况可以提出待验证的建议，先由投手确认，再在授权范围内验证；结构、预算或权限校验不过就退回。',why:'幻觉：输出有固定结构，每一条依据都能对应数据记录和判断方法。'},
+    '4':{num:'④',title:'校验',who:'程序',cls:'warn',what:'预算控制器按授权总额、已消耗、未入账预估和待执行调整算额度与幅度；查授权配置，得到三种结果之一：已授权、需审批、禁止。',fb:'硬校验。模型没有绕过的路径，校验不过的方案走不到执行。',why:'约束的太少：额度、幅度、权限全部由程序而不是模型判断。'},
+    '5':{num:'⑤',title:'审批',who:'人',cls:'hu',what:'投手逐卡审批，修改或否决时写一句原因；生成素材上线前人工审核。L1 的经营调整逐项审批；L2 的已验证动作在授权范围内自动；L3 扩大常态自动范围，关键动作与例外仍转人工。',fb:'需要审批而无人审批时不执行。升级同时看该类动作的审批通过率、实际效果和执行安全，不能只凭建议被接受就开放自动执行。',why:'约束的太少：自动化按客户、动作、情境逐级放开，依据审批记录、实际效果与执行安全决定。'},
+    '6':{num:'⑥',title:'执行与回读',who:'程序',cls:'warn',what:'系统通过统一的受控入口提交操作，避免同一动作被重复执行；再读取平台配置核对结果，记录修改前后值、当时数据、策略版本与授权依据。首期需要人工执行的结构调整，由投手完成后核对记录。',fb:'回读不一致即告警转人工，不猜「应该已经成功了」。请求成功、配置生效、广告投放、效果变化是四个不同状态。',why:'幻觉：接口返回成功不等于优化完成，配置是否生效要核对平台，效果好坏要等观察期结束再评估。'},
+    '7':{num:'⑦',title:'复盘',who:'Agent + 人',cls:'',what:'观察窗口结束后比较结果，写入决策案例（当时的快照、判断依据、备选、动作、结果），更新策略卡验证记录；含「不动」的案例。',fb:'投手确认后才入库；不把促销、旺季等外部因素记成策略效果。',why:'知道的太少：每一次决策的结果都变成下一次决策能查到的事实。'},
+    'kb':{num:'◎',title:'知识库',who:'数据与经验',cls:'',what:'策略卡（适用范围、必要证据、不执行条件、候选动作、观察窗口、版本）、决策案例、素材标签、审批原因。审批与复盘写回，下一次出方案先查它。',fb:'先按客户、目标和适用条件筛选，再参考相似案例；每张卡保留版本、整理来源和验证记录，必要时可恢复旧版。',why:'知道的太少：投手的方法与案例供下一次判断参考；是否判断得更好，要用新案例和真实结果验证。'}
+  };
+  const order=['1','2','3','4','5','6','7','kb'];
+  const nav=$('np-nav'), modal=$('node-modal'); let cur='1', opener=null;
+  order.forEach(k=>{ const b=document.createElement('button'); b.type='button'; b.dataset.node=k; b.textContent=nodes[k].num+' '+nodes[k].title; nav.appendChild(b); });
+  function show(k){
+    const n=nodes[k]; if(!n) return; cur=k;
+    $('np-num').textContent=n.num; $('np-title').textContent=n.title;
+    const who=$('np-who'); who.textContent=n.who; who.className='pill'+(n.cls?' '+n.cls:'');
+    $('np-what').textContent=n.what; $('np-fallback').textContent=n.fb; $('np-why').textContent=n.why;
+    document.querySelectorAll('.diagram .node').forEach(g=>g.classList.toggle('on',g.dataset.node===k));
+    nav.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.node===k));
+    const i=order.indexOf(k); $('np-prev').disabled=i<=0; $('np-next').disabled=i>=order.length-1;
+    if(modal.hidden){ modal.hidden=false; $('np-close').focus(); }
+  }
+  function close(){ modal.hidden=true; document.querySelectorAll('.diagram .node').forEach(g=>g.classList.remove('on')); if(opener&&opener.focus) opener.focus(); opener=null; }
+  document.querySelectorAll('.diagram .node').forEach(g=>{
+    g.addEventListener('click',()=>{ opener=g; show(g.dataset.node); });
+    g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); opener=g; show(g.dataset.node); } });
+  });
+  nav.addEventListener('click',e=>{ const b=e.target.closest('button[data-node]'); if(b) show(b.dataset.node); });
+  $('np-prev').addEventListener('click',()=>{ const i=order.indexOf(cur); if(i>0) show(order[i-1]); });
+  $('np-next').addEventListener('click',()=>{ const i=order.indexOf(cur); if(i<order.length-1) show(order[i+1]); });
+  $('np-close').addEventListener('click',close);
+  modal.addEventListener('click',e=>{ if(e.target===modal) close(); });
+  document.addEventListener('keydown',e=>{
+    if(modal.hidden) return;
+    if(e.key==='Escape'){ close(); }
+    else if(e.key==='ArrowRight'){ $('np-next').click(); }
+    else if(e.key==='ArrowLeft'){ $('np-prev').click(); }
+  });
+
+  // 审批卡演示
+  const cards=[
+    {tier:'二类层',name:'账户 A · 电商',money:'预算不变 · 素材替换',rows:[['发现','素材 V3 近 7 天 CTR 下降 32%，频次 3.8'],['依据','疲劳规则：频次 > 3.5 且 CTR 连续 5 天下降；转化窗口已成熟'],['建议','暂停 V3，以 V5 替换进同一广告组，预算不变'],['为什么现在','回传正常，不在观察期，V5 已通过审核'],['何时看结果','7 天后复盘 CTR 与 CPA']]},
+    {tier:'二类层',name:'账户 B · App',money:'动 +¥1,500/天',rows:[['发现','近 7 天 CPA 低于目标 18%，日预算消耗 100%'],['依据','策略卡「成熟账户放量 v2」：学习期已结束 5 天，成熟窗口达标'],['建议','日预算 ¥10,000 → ¥11,500（+15%，授权上限 20%）'],['为什么现在','观察期已结束、回传正常，拟在已授权幅度内小步测试；执行前再核对平台限制'],['何时看结果','5 天后复盘 CPA 是否仍达标']]},
+    {tier:'三类层',name:'账户 C · 线索获客',money:'划转 ¥3,000/天 · 人工执行',manual:true,rows:[['发现','测试周期结束，人群包 P2 产出 12 个有效商机，成本在容忍范围'],['依据','升级规则：转化数达门槛且成本达标'],['建议','P2 升二类，新建广告组承接，预算从测试池划转'],['为什么现在','测试达到约定门槛，建议转入放量验证；由投手确认并调整账户结构'],['何时看结果','14 天后比较二类口径的商机成本']]},
+    {tier:'一类层',name:'账户 D · 电商',money:'动 ¥0 · 安全动作',auto:true,rows:[['发现','转化回传匹配质量从 7.8 降到 5.1，报表转化环比 −38%'],['依据','信号健康巡检：匹配质量 < 6 时数据不可信'],['系统动作','已自动冻结该账户的预算与素材自动调整，通知投手排查回传'],['为什么不审批','冻结只停系统自己的自动调整，不改平台配置；数据不可信时默认不动'],['恢复条件','投手确认匹配质量回到 7 以上']]}
+  ];
+  const wrap=$('demo-cards'); const st={pass:0,edit:0,rej:0};
+  function render(){
+    wrap.innerHTML='';
+    cards.forEach((c,i)=>{
+      const a=document.createElement('article'); a.className='acard'+(c.auto?' auto':'');
+      a.innerHTML='<header><span class="pill'+(c.auto?' warn':'')+'">'+c.tier+'</span><strong>'+c.name+'</strong><span class="money">'+c.money+'</span></header><dl class="kv">'+c.rows.map(r=>'<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>').join('')+'</dl>'
+        +(c.auto?'<div class="done r">已自动执行 · 行动记录 #D-0417 · 无需审批</div>'
+        :'<footer><button class="btn sm pri" type="button" data-act="pass">原样通过</button><button class="btn sm" type="button" data-act="edit">修改后通过</button><button class="btn sm" type="button" data-act="rej">否决</button></footer><div class="reason" hidden><textarea aria-label="原因" placeholder="说明修改或否决的原因（进入案例库）"></textarea><div style="margin-top:6px"><button class="btn sm pri" type="button" data-act="confirm">确认</button></div></div>');
+      a.dataset.i=i; wrap.appendChild(a);
+    });
+  }
+  function stats(){
+    const total=st.pass+st.edit+st.rej;
+    $('st-pass').textContent=st.pass; $('st-edit').textContent=st.edit; $('st-rej').textContent=st.rej;
+    const rate=total?st.pass/total:0;
+    $('st-rate').textContent=total?Math.round(rate*100)+'%':'—';
+    $('demo-progress').style.width=Math.min(100,rate*100)+'%';
+  }
+  wrap.addEventListener('click',e=>{
+    const b=e.target.closest('button[data-act]'); if(!b) return;
+    const card=b.closest('.acard'); const act=b.dataset.act; const foot=card.querySelector('footer'); const rb=card.querySelector('.reason');
+    if(act==='pass'){ st.pass++; foot.remove(); rb.remove(); const next=cards[Number(card.dataset.i)].manual?'已通过，交由投手执行 · 完成后核对并记录':'已通过，进入执行队列 · 核对平台结果后记录'; card.insertAdjacentHTML('beforeend','<div class="done">'+next+'</div>'); stats(); return; }
+    if(act==='edit'||act==='rej'){ card.dataset.pending=act; rb.hidden=false; rb.querySelector('textarea').focus(); return; }
+    if(act==='confirm'){
+      const ta=rb.querySelector('textarea'); const txt=ta.value.trim();
+      if(!txt){ ta.setCustomValidity('请填写原因'); ta.reportValidity(); ta.style.borderColor='var(--bad)'; return; }
+      const p=card.dataset.pending; if(p==='edit') st.edit++; else st.rej++;
+      foot.remove(); rb.remove();
+      card.insertAdjacentHTML('beforeend','<div class="done'+(p==='rej'?' r':'')+'">'+(p==='edit'?'修改后通过':'已否决')+' · 原因已进入案例库：「'+txt.replace(/</g,'&lt;')+'」</div>');
+      stats();
+    }
+  });
+  $('demo-reset').addEventListener('click',()=>{ st.pass=st.edit=st.rej=0; render(); stats(); });
+  render(); stats();
+})();
+</script>
+
+</body></html>
