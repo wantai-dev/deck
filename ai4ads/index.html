@@ -2,6 +2,8 @@
 <title>Ai4Ads｜让投手经验成为团队可复用的能力</title>
 <meta name="description" content="Ai4Ads 客户方案：把资深投手的判断、动作和复盘方法沉淀为团队可以复用的能力。">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%20fill%3D%22none%22%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22%23FBF7EE%22%2F%3E%3Cg%20fill%3D%22%2324584B%22%20transform%3D%22translate%28-261.326134%20-209.166307%29%20scale%281.511879%29%22%3E%3Cpath%20d%3D%22M314%20389%0AQ309%20389%20312%20395%0AL399%20576%0AQ406%20601%20421%20606%0AQ436%20601%20443%20576%0AL536%20395%0AQ539%20389%20533%20389%0AL492%20389%0AQ486%20389%20482%20396%0AL433%20493%0AQ425%20510%20417%20493%0AL363%20395%0AQ360%20389%20354%20389%0AZ%22%2F%3E%3Cpath%20d%3D%22M520%20457%0AQ516%20457%20513%20463%0AL496%20495%0AQ493%20501%20497%20508%0AL544%20590%0AQ550%20604%20561%20606%0AQ573%20604%20579%20590%0AL664%20422%0AQ667%20416%20663%20412%0AL640%20391%0AQ635%20386%20631%20392%0AL568%20508%0AQ560%20523%20552%20508%0AL528%20463%0AQ525%20457%20520%20457%0AZ%22%2F%3E%3Ccircle%20cx%3D%22684%22%20cy%3D%22378%22%20r%3D%2230%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%20fill%3D%22none%22%3E%3Crect%20width%3D%221024%22%20height%3D%221024%22%20fill%3D%22%23123D2B%22%2F%3E%3Cg%20fill%3D%22%23FBF7EE%22%20transform%3D%22translate%28-261.326134%20-209.166307%29%20scale%281.511879%29%22%3E%3Cpath%20d%3D%22M314%20389%0AQ309%20389%20312%20395%0AL399%20576%0AQ406%20601%20421%20606%0AQ436%20601%20443%20576%0AL536%20395%0AQ539%20389%20533%20389%0AL492%20389%0AQ486%20389%20482%20396%0AL433%20493%0AQ425%20510%20417%20493%0AL363%20395%0AQ360%20389%20354%20389%0AZ%22%2F%3E%3Cpath%20d%3D%22M520%20457%0AQ516%20457%20513%20463%0AL496%20495%0AQ493%20501%20497%20508%0AL544%20590%0AQ550%20604%20561%20606%0AQ573%20604%20579%20590%0AL664%20422%0AQ667%20416%20663%20412%0AL640%20391%0AQ635%20386%20631%20392%0AL568%20508%0AQ560%20523%20552%20508%0AL528%20463%0AQ525%20457%20520%20457%0AZ%22%2F%3E%3Ccircle%20cx%3D%22684%22%20cy%3D%22378%22%20r%3D%2230%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" media="(prefers-color-scheme: dark)">
 <style>
 /* Layout: 满版深绿封面 → 引言（三个难题）→ 以业务架构图为核心的一节（可点击的七个环节 + 说明面板）→ 落地 / 验证 / 积累 / 安全 / 留在自己手里，各一屏 */
 :root{
@@ -59,7 +61,9 @@ section{padding-block:56px;border-top:1px solid var(--line-soft)}
 /* 顶栏 */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line-soft)}
 .top .wrap{display:flex;align-items:center;gap:16px;height:52px}
-.top .brand{font-family:var(--display);font-weight:700;white-space:nowrap;font-size:15px}
+.top .brand{display:flex;align-items:center;gap:10px;flex:none;font-family:var(--display);font-weight:700;white-space:nowrap;font-size:15px}
+.nav-logo{display:block;flex:none;width:44px}
+.nav-logo img{display:block;width:44px;height:auto}
 .top nav{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;display:flex;gap:4px}
 .top nav::-webkit-scrollbar{display:none}
 .top nav a{white-space:nowrap;font-size:13px;color:var(--ink-3);padding:6px 9px;border-radius:6px}
@@ -68,6 +72,9 @@ section{padding-block:56px;border-top:1px solid var(--line-soft)}
 /* 封面 */
 .hero{background:var(--hero-bg);color:var(--hero-fg);padding-block:72px 64px;border-top:0}
 .hero .eyebrow{color:var(--hero-muted)}
+.hero-brand{display:flex;align-items:center;gap:20px;margin-bottom:22px}
+.hero-logo{display:block;flex:none;width:76px;height:auto}
+.hero-brand .eyebrow{margin:0;min-width:0}
 .hero h1{font-size:clamp(30px,5vw,50px);max-width:16em;font-weight:700}
 .hero .lead{color:var(--hero-muted);font-size:18px;max-width:34em;margin-top:22px}
 
@@ -187,14 +194,14 @@ figcaption{font-size:13.5px;color:var(--ink-3);margin-top:10px;max-width:48em}
 </head>
 <body>
 <div class="top"><div class="wrap">
-  <div class="brand">Ai4Ads</div>
+  <div class="brand"><picture class="nav-logo"><source media="(prefers-color-scheme: dark)" srcset="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22280%20318%20463%20318%22%20fill%3D%22none%22%3E%3Cg%20fill%3D%22%23FBF7EE%22%3E%3Cpath%20d%3D%22M314%20389%0AQ309%20389%20312%20395%0AL399%20576%0AQ406%20601%20421%20606%0AQ436%20601%20443%20576%0AL536%20395%0AQ539%20389%20533%20389%0AL492%20389%0AQ486%20389%20482%20396%0AL433%20493%0AQ425%20510%20417%20493%0AL363%20395%0AQ360%20389%20354%20389%0AZ%22%2F%3E%3Cpath%20d%3D%22M520%20457%0AQ516%20457%20513%20463%0AL496%20495%0AQ493%20501%20497%20508%0AL544%20590%0AQ550%20604%20561%20606%0AQ573%20604%20579%20590%0AL664%20422%0AQ667%20416%20663%20412%0AL640%20391%0AQ635%20386%20631%20392%0AL568%20508%0AQ560%20523%20552%20508%0AL528%20463%0AQ525%20457%20520%20457%0AZ%22%2F%3E%3Ccircle%20cx%3D%22684%22%20cy%3D%22378%22%20r%3D%2230%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22280%20318%20463%20318%22%20fill%3D%22none%22%3E%3Cg%20fill%3D%22%2324584B%22%3E%3Cpath%20d%3D%22M314%20389%0AQ309%20389%20312%20395%0AL399%20576%0AQ406%20601%20421%20606%0AQ436%20601%20443%20576%0AL536%20395%0AQ539%20389%20533%20389%0AL492%20389%0AQ486%20389%20482%20396%0AL433%20493%0AQ425%20510%20417%20493%0AL363%20395%0AQ360%20389%20354%20389%0AZ%22%2F%3E%3Cpath%20d%3D%22M520%20457%0AQ516%20457%20513%20463%0AL496%20495%0AQ493%20501%20497%20508%0AL544%20590%0AQ550%20604%20561%20606%0AQ573%20604%20579%20590%0AL664%20422%0AQ667%20416%20663%20412%0AL640%20391%0AQ635%20386%20631%20392%0AL568%20508%0AQ560%20523%20552%20508%0AL528%20463%0AQ525%20457%20520%20457%0AZ%22%2F%3E%3Ccircle%20cx%3D%22684%22%20cy%3D%22378%22%20r%3D%2230%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" width="44" height="30" alt="WantAi"></picture><span>Ai4Ads</span></div>
   <nav>
     <a href="#p0">引言</a><a href="#p1">业务架构</a><a href="#p2">怎么落地</a><a href="#p3">怎么验证</a><a href="#p4">怎么积累</a><a href="#p5">数据安全</a><a href="#p6">模型与系统</a>
   </nav>
 </div></div>
 
 <header class="hero"><div class="wrap">
-  <div class="eyebrow">Ai4Ads · 客户方案 · 2026 年 10 月</div>
+  <div class="hero-brand"><img class="hero-logo" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%22280%20318%20463%20318%22%20fill%3D%22none%22%3E%3Cg%20fill%3D%22%23FBF7EE%22%3E%3Cpath%20d%3D%22M314%20389%0AQ309%20389%20312%20395%0AL399%20576%0AQ406%20601%20421%20606%0AQ436%20601%20443%20576%0AL536%20395%0AQ539%20389%20533%20389%0AL492%20389%0AQ486%20389%20482%20396%0AL433%20493%0AQ425%20510%20417%20493%0AL363%20395%0AQ360%20389%20354%20389%0AZ%22%2F%3E%3Cpath%20d%3D%22M520%20457%0AQ516%20457%20513%20463%0AL496%20495%0AQ493%20501%20497%20508%0AL544%20590%0AQ550%20604%20561%20606%0AQ573%20604%20579%20590%0AL664%20422%0AQ667%20416%20663%20412%0AL640%20391%0AQ635%20386%20631%20392%0AL568%20508%0AQ560%20523%20552%20508%0AL528%20463%0AQ525%20457%20520%20457%0AZ%22%2F%3E%3Ccircle%20cx%3D%22684%22%20cy%3D%22378%22%20r%3D%2230%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" width="76" height="52" alt="WantAi"><div class="eyebrow">Ai4Ads · 客户方案 · 2026 年 10 月</div></div>
   <h1>让投手经验成为团队可复用的投放能力</h1>
   <p class="lead">从日常判断到持续复盘：AI 怎样帮投手发现问题、提出建议，团队怎样把经验留下来，并始终掌握预算与执行权限。</p>
 </div></header>
