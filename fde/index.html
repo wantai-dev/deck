@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>换一种思路做 FDE</title>
+<style>
+:root{
+  --bg:#0d0c0a; --stage:#171612; --fg:#f3efe6; --muted:#a8a296; --faint:#4a463e; --line:#2f2c26;
+  --accent:#f07b3d; --accent-soft:rgba(240,123,61,.13); --cell:243,239,230;
+}
+:root[data-theme="light"]{
+  --bg:#dcd7cc; --stage:#f7f4ed; --fg:#1c1a16; --muted:#6b665b; --faint:#c9c3b6; --line:#dfd9cc;
+  --accent:#c4531c; --accent-soft:rgba(196,83,28,.10); --cell:28,26,22;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);overflow:hidden}
+body{font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Source Han Sans SC","Microsoft YaHei",system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;cursor:default}
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{width:1600px;height:900px;flex:none;position:relative;background:var(--stage);transform-origin:center center;overflow:hidden}
+
+.slide{position:absolute;inset:0;padding:120px 128px 110px;display:none;flex-direction:column;justify-content:center}
+.slide.active{display:flex}
+.notes{display:none}
+
+.kicker{position:absolute;top:58px;left:128px;font-size:20px;letter-spacing:.14em;color:var(--muted)}
+.kicker b{color:var(--accent);font-weight:600;margin-right:16px;letter-spacing:.08em}
+h1,h2,h3,p{margin:0}
+.xl{font-size:92px;line-height:1.24;font-weight:650;letter-spacing:-.005em}
+.l{font-size:66px;line-height:1.3;font-weight:650}
+.m{font-size:50px;line-height:1.35;font-weight:600}
+.lead{font-size:34px;line-height:1.6;color:var(--muted)}
+.a{color:var(--accent);font-style:normal}
+.muted{color:var(--muted)}
+.mt-s{margin-top:28px}.mt{margin-top:48px}.mt-l{margin-top:72px}
+.rule{width:72px;height:4px;background:var(--accent);margin-bottom:40px}
+
+/* fragments */
+.f{opacity:0;transform:translateY(14px);transition:opacity .35s ease,transform .35s ease}
+.f.on{opacity:1;transform:none}
+
+/* cover */
+.cover .xl{font-size:118px;line-height:1.16}
+.cover .sub{font-size:44px;margin-top:44px;font-weight:500}
+.cover .meta{font-size:26px;color:var(--muted);margin-top:22px}
+
+/* quote */
+.quote{font-size:46px;line-height:1.5;font-weight:500;border-left:4px solid var(--accent);padding-left:40px}
+
+/* rows */
+.rows{margin-top:44px}
+.row{display:grid;grid-template-columns:330px 1fr;gap:44px;align-items:baseline;padding:20px 0;border-top:1px solid var(--line)}
+.row:last-child{border-bottom:1px solid var(--line)}
+.row .t{font-size:38px;font-weight:600}
+.row .d{font-size:31px;color:var(--muted);line-height:1.5}
+
+/* two cards */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:52px}
+.card{border:1px solid var(--line);border-radius:6px;padding:44px 48px}
+.card.hi{border-color:var(--accent);background:var(--accent-soft)}
+.card .cap{font-size:24px;letter-spacing:.12em;color:var(--muted)}
+.card.hi .cap{color:var(--accent)}
+.card .say{font-size:36px;line-height:1.5;font-weight:600;margin-top:20px}
+.card .res{font-size:30px;line-height:1.6;color:var(--muted);margin-top:24px}
+.card .big{font-size:40px;font-weight:600;margin-top:18px;line-height:1.45}
+
+/* formula */
+.formula{display:flex;align-items:center;gap:40px;margin-top:64px;font-size:84px;font-weight:650}
+.formula .op{color:var(--muted);font-weight:400}
+.formula .term{display:flex;flex-direction:column;align-items:center}
+.formula .term small{font-size:28px;font-weight:500;color:var(--accent);margin-top:18px;letter-spacing:.06em}
+.formula .term small.m2{color:var(--muted)}
+
+/* bars */
+.bars{display:grid;grid-template-columns:repeat(3,1fr);gap:56px;margin-top:40px;align-items:end}
+.bcol .who{font-size:30px;font-weight:600}
+.bcol .io{font-size:26px;color:var(--muted);margin-top:8px}
+.bar{margin-top:22px;background:var(--faint);border-radius:4px 4px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:18px;font-size:44px;font-weight:650}
+.bcol.hi .bar{background:var(--accent);color:#fff}
+.bcol .note{font-size:24px;color:var(--muted);line-height:1.55;margin-top:18px;min-height:76px}
+.foot{position:absolute;bottom:60px;left:128px;font-size:20px;color:var(--muted)}
+
+/* numbered */
+.nums{margin-top:52px}
+.nrow{display:grid;grid-template-columns:120px 1fr;align-items:baseline;padding:26px 0;border-top:1px solid var(--line)}
+.nrow:last-child{border-bottom:1px solid var(--line)}
+.nrow .n{font-size:60px;font-weight:650;color:var(--accent);font-variant-numeric:tabular-nums}
+.nrow .t{font-size:46px;font-weight:600;line-height:1.35}
+.nrow .t small{display:block;font-size:28px;font-weight:400;color:var(--muted);margin-top:10px}
+
+/* pills */
+.pills{display:flex;gap:28px;margin-top:56px}
+.pill{font-size:34px;padding:20px 36px;border-radius:999px;border:1px solid var(--line)}
+.pill.no{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--faint)}
+.pill.yes{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:600}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:64px}
+.stat .num{font-size:116px;font-weight:650;line-height:1;letter-spacing:-.02em}
+.stat .num span{font-size:46px;font-weight:600;margin-left:6px}
+.stat .lbl{font-size:30px;color:var(--muted);margin-top:18px}
+.chips{display:flex;flex-wrap:wrap;gap:18px;margin-top:22px}
+.chip{font-size:28px;padding:12px 28px;border:1px solid var(--line);border-radius:999px}
+
+/* matrix */
+.mx-wrap{display:grid;grid-template-columns:1fr 600px;gap:72px;align-items:center;height:100%}
+.mx{position:relative;padding:44px 0 0 44px}
+.mx-grid{display:grid;grid-template-columns:repeat(9,52px);grid-auto-rows:28px;gap:5px}
+.mx-grid i{border-radius:3px;display:block}
+.mx-grid i.gap{border:2px dashed var(--accent);transition:background .4s}
+#mxSlide.lit .mx-grid i.gap{background:var(--accent);border-style:solid}
+.mx .ax-x{position:absolute;top:0;left:44px;font-size:22px;color:var(--muted)}
+.mx .ax-y{position:absolute;top:44px;left:0;font-size:22px;color:var(--muted);writing-mode:vertical-rl}
+.legend{display:flex;flex-direction:column;gap:18px;margin-top:44px;font-size:28px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:18px}
+.legend i{width:40px;height:24px;border-radius:3px;display:inline-block}
+
+/* giant */
+.giant{font-size:300px;font-weight:700;line-height:.9;color:var(--accent);letter-spacing:-.04em}
+.giant-lbl{font-size:44px;font-weight:600;margin-top:30px}
+
+/* path */
+.path{display:grid;grid-template-columns:1fr 64px 1fr 64px 1fr;align-items:stretch;margin-top:56px}
+.node{border:1px solid var(--line);border-radius:6px;padding:34px 34px}
+.node.first{border-color:var(--accent);background:var(--accent-soft)}
+.node .nm{font-size:40px;font-weight:650}
+.node .ds{font-size:26px;color:var(--muted);line-height:1.55;margin-top:14px}
+.arrow{display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--accent)}
+
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:56px}
+.step{border-top:4px solid var(--faint);padding-top:26px}
+.step.end{border-top-color:var(--accent)}
+.step .k{font-size:24px;letter-spacing:.14em;color:var(--muted)}
+.step .v{font-size:32px;font-weight:600;line-height:1.45;margin-top:14px}
+
+/* closing */
+.close-line{font-size:58px;line-height:1.5;font-weight:600}
+.close-line+.close-line{margin-top:44px}
+.close-line .dash{color:var(--muted);font-weight:400}
+
+/* end + qr */
+.end-wrap{display:grid;grid-template-columns:1fr auto;align-items:center;gap:96px}
+.qr{margin:0;background:#f3efe6;border:1px solid var(--line);border-radius:18px;padding:20px 20px 16px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.qr img{display:block;width:320px;height:320px;border-radius:6px}
+.qr figcaption{color:#171612;font-size:24px;font-weight:600;margin-top:12px;letter-spacing:.04em}
+.qr figcaption span{display:block;font-size:18px;font-weight:400;color:#6b665b;margin-top:4px;letter-spacing:.02em}
+:root[data-theme="light"] .qr{box-shadow:0 10px 30px rgba(0,0,0,.08)}
+
+/* chrome */
+#counter{position:absolute;right:128px;bottom:52px;font-size:20px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+#brand{position:absolute;left:128px;bottom:52px;font-size:20px;color:var(--faint);letter-spacing:.06em}
+#progress{position:absolute;left:0;bottom:0;height:4px;background:var(--accent);transition:width .3s ease}
+.slide.cover~#brand{display:none}
+#black{position:fixed;inset:0;background:#000;display:none;z-index:50}
+#black.on{display:block}
+#notesPanel{position:fixed;left:0;right:0;bottom:0;max-height:42vh;overflow:auto;background:rgba(10,10,8,.94);color:#eee;font-size:17px;line-height:1.75;padding:22px 32px;display:none;z-index:40;border-top:2px solid var(--accent)}
+#notesPanel.on{display:block}
+#notesPanel p{margin:0 0 10px}
+#help{position:fixed;top:24px;right:24px;background:rgba(10,10,8,.92);color:#eee;font-size:15px;line-height:1.9;padding:18px 24px;border-radius:8px;z-index:45;opacity:0;pointer-events:none;transition:opacity .4s}
+#help.on{opacity:1}
+#help kbd{display:inline-block;min-width:26px;text-align:center;border:1px solid #666;border-radius:4px;padding:0 6px;margin-right:10px;font-family:inherit;font-size:13px}
+
+/* 编辑模式 */
+#editbar{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:60;display:none;align-items:center;gap:6px;background:rgba(10,10,8,.94);color:#eee;font-size:14px;padding:8px 10px 8px 18px;border-radius:999px;box-shadow:0 6px 24px rgba(0,0,0,.35);white-space:nowrap}
+body.editing #editbar{display:flex}
+#editbar .lbl{color:#f07b3d;font-weight:600;margin-right:8px}
+#editbar .pos{min-width:64px;text-align:center;font-variant-numeric:tabular-nums;color:#bbb}
+#editbar button{background:#2a2925;color:#eee;border:1px solid #444;border-radius:999px;padding:6px 14px;font:inherit;cursor:pointer}
+#editbar button:hover{border-color:#888}
+#editbar button.primary{background:#f07b3d;border-color:#f07b3d;color:#fff}
+#editbar .dirty{color:#f07b3d;margin:0 4px;display:none}
+body.editing.dirty #editbar .dirty{display:inline}
+body.editing .slide.active{cursor:text;outline:2px dashed var(--accent);outline-offset:-16px}
+body.editing .slide.active:focus{outline-style:solid}
+#notesBody{outline:none}
+body.editing #notesPanel{max-height:32vh}
+body.editing #notesBody{outline:1px dashed #f07b3d;outline-offset:6px;cursor:text;min-height:2em}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(10,10,8,.94);color:#eee;padding:10px 18px;border-radius:8px;font-size:14px;z-index:70;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.on{opacity:1}
+
+@media (prefers-reduced-motion:reduce){.f,#progress{transition:none}}
+@media print{
+  @page{size:1600px 900px;margin:0}
+  html,body{overflow:visible;height:auto;background:#fff}
+  #viewport{position:static;display:block}
+  #stage{transform:none!important;width:auto;height:auto;overflow:visible;background:none}
+  .slide{display:flex!important;position:relative;width:1600px;height:900px;break-after:page;background:var(--stage)}
+  .f{opacity:1!important;transform:none!important}
+  #counter,#progress,#brand,#help,#notesPanel,#black,#editbar,#toast{display:none!important}
+  .slide{outline:none!important}
+}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+
+<!-- 1 封面 -->
+<section class="slide cover" data-title="封面">
+  <div class="rule"></div>
+  <h1 class="xl">换一种思路<br>做 FDE</h1>
+  <p class="sub">放下降本，我们来聊聊<em class="a">增效</em></p>
+  <p class="meta">在中国软件环境下，如何为企业做增长 · WantAi · 2026.10.17</p>
+  <aside class="notes">
+    <p>大家好。今天我想聊一个有点逆潮流的话题。</p>
+    <p>现在大家聊 FDE，聊得最多的是什么？降本。AI 能替掉多少人，一个流程能省几个岗位。这个说法没有错，账也算得清楚。</p>
+    <p>但我们这一年在客户那里做下来，发现一件事：降本这条路，在中国越走越窄。今天我想讲讲为什么，以及我们换了一条什么路。</p>
+  </aside>
+</section>
+
+<!-- 2 §1 现状 -->
+<section class="slide" data-title="01 现状：主流说法是降本">
+  <div class="kicker"><b>01</b>现状</div>
+  <h2 class="l">现在 FDE 圈子的主流说法，<br>是<em class="a">降本</em>。</h2>
+  <p class="lead mt-s">进客户办公室 · 梳流程 · 算能替掉多少人</p>
+  <p class="quote mt-l f">项目还没启动，<br>基层已经在猜谁会被优化。</p>
+  <p class="lead mt-s f">配合度、数据开放、流程访谈，全部打折。</p>
+  <aside class="notes">
+    <p>先说现状。</p>
+    <p>现在一个典型的降本项目是这样开始的：FDE 进到客户办公室，梳流程，算这个环节能替掉几个人，那个环节能省多少工时。</p>
+    <p>问题是，消息永远传得比项目快。项目还没启动，基层已经在猜：这次会优化谁？</p>
+    <p>接下来会发生什么？配合度打折，数据开放打折，流程访谈也打折。你问一个流程怎么跑，他告诉你的，是制度上写的那个版本，不是实际在跑的那个版本。</p>
+    <p>这不怪员工，换谁都一样。让一个人全力配合一个可能替掉他的项目，本身就是逆着人心在走。</p>
+  </aside>
+</section>
+
+<!-- 3 §1 部门负责人 + 中国现实 -->
+<section class="slide" data-title="01 现状：决定走多远的是部门负责人">
+  <div class="kicker"><b>01</b>现状</div>
+  <h2 class="m">真正决定项目走多远的，是<em class="a">部门负责人</em>。</h2>
+  <p class="lead mt-s">降本方案递到他手上，等于外部的人来证明：他部门多了人。</p>
+  <div class="two">
+    <div class="card f"><div class="cap">中国现实 · 一</div><div class="big">人力成本相对低</div><div class="res">靠省人算出来的回报，不够大。</div></div>
+    <div class="card f"><div class="cap">中国现实 · 二</div><div class="big">不太愿意为工具付钱</div><div class="res">但愿意为收入付钱。</div></div>
+  </div>
+  <aside class="notes">
+    <p>基层的抵触还只是表面。真正决定项目能走多远的，是部门负责人。</p>
+    <p>降本方案递到他手上，意味着什么？意味着一个外部团队，来证明他的部门多了人。他很难真心去推。</p>
+    <p>在中国，这件事还要再难一点，因为有两个现实。</p>
+    <p>第一，人力成本相对低。同样一个岗位，靠省人算出来的回报没有那么大，很难撑起一个像样的项目。</p>
+    <p>第二，企业不太愿意为工具付钱，但愿意为收入付钱。我们的体会是：你说能帮他省钱，他的第一反应是压你的价；你说能帮他多卖货，他的第一反应是问你什么时候能开始。</p>
+  </aside>
+</section>
+
+<!-- 4 §1 过渡 -->
+<section class="slide" data-title="01 过渡：先把生意做大">
+  <div class="kicker"><b>01</b>现状</div>
+  <h2 class="xl">所以我们换了个方向：<br>先帮企业把<em class="a">生意做大</em>。</h2>
+  <aside class="notes">
+    <p>所以我们换了个方向：先不谈省人，先帮企业把生意做大。</p>
+  </aside>
+</section>
+
+<!-- 5 §2 人效比 -->
+<section class="slide" data-title="02 人效比公式">
+  <div class="kicker"><b>02</b>经营者视角</div>
+  <h2 class="l">降本和增效，是同一道题。</h2>
+  <div class="formula">
+    <div class="term">人效比</div>
+    <div class="op">=</div>
+    <div class="term f">产出<small>增效：动分子</small></div>
+    <div class="op">÷</div>
+    <div class="term f">人数<small class="m2">降本：动分母</small></div>
+  </div>
+  <aside class="notes">
+    <p>这时候一定有人会说：降本和增长是两件事，客户买 FDE，就是冲着降本来的。</p>
+    <p>我想站在老板的角度算一笔账。老板真正看的，不只是成本，也不只是收入，是人效比：产出除以人数。</p>
+    <p>降本，是在动分母。增长，是在动分子。在老板的账上，它们是同一道题。</p>
+  </aside>
+</section>
+
+<!-- 6 §2 算一笔账 -->
+<section class="slide" data-title="02 算一笔账">
+  <div class="kicker"><b>02</b>经营者视角 · 算一笔账</div>
+  <div class="bars">
+    <div class="bcol">
+      <div class="who">现在</div><div class="io">100 人 · 1 亿收入</div>
+      <div class="bar" style="height:200px">100 万</div>
+      <div class="note">人效</div>
+    </div>
+    <div class="bcol f">
+      <div class="who">只降本</div><div class="io">80 人 · 1 亿收入</div>
+      <div class="bar" style="height:250px">125 万</div>
+      <div class="note">有天花板：人不能一直减，<br>最先走的往往是最懂业务的人。</div>
+    </div>
+    <div class="bcol hi f">
+      <div class="who">先增长</div><div class="io">100 人 · 1.5 亿收入</div>
+      <div class="bar" style="height:300px">150 万</div>
+      <div class="note">业务大了再调结构，<br>人效还能再往上走。</div>
+    </div>
+  </div>
+  <div class="foot">示意数字，非客户数据</div>
+  <aside class="notes">
+    <p>举个简单的例子，数字是示意的。</p>
+    <p>一家公司，一百个人，做一个亿的收入，人效一百万。</p>
+    <p>第一条路，只降本。减到八十个人，收入不变，人效一百二十五万。看起来不错。但这条路有天花板，人不能一直减。而且你会发现，最先走的，往往是最懂业务、最容易找到下家的人。</p>
+    <p>第二条路，先增长。还是一百个人，收入做到一点五个亿，人效一百五十万，比只降本那条路还高。</p>
+    <p>而且业务做大以后，组织自然会调整：一部分人调去新业务，有人离开了也可以不补。人效还能继续往上走。</p>
+  </aside>
+</section>
+
+<!-- 7 §2 增量 -->
+<section class="slide" data-title="02 增量里调结构">
+  <div class="kicker"><b>02</b>经营者视角</div>
+  <h2 class="xl">增量里调结构，<br><em class="a">阻力最小</em>。</h2>
+  <p class="lead mt">先做增量，再动存量。</p>
+  <aside class="notes">
+    <p>这背后的道理，大家其实都熟悉：在增量里调结构，阻力最小。中国改革开放走的就是这条路，先做增量，再动存量。</p>
+    <p>做 FDE 也一样。先帮他把增量做出来，结构上的调整，是后面水到渠成的事。</p>
+  </aside>
+</section>
+
+<!-- 8 §3 主线 -->
+<section class="slide" data-title="03 入场券与走多远">
+  <div class="kicker"><b>03</b>老板和高管各自在想什么</div>
+  <p class="lead">一个项目里，坐在你对面的，从来不是一个人。</p>
+  <h2 class="xl mt">老板给你<em class="a">入场券</em>，<br>部门负责人决定你能<em class="a">走多远</em>。</h2>
+  <aside class="notes">
+    <p>道理讲完了。可道理老板都懂，那为什么降本的项目还是这么难推？</p>
+    <p>因为一个项目里，坐在你对面的，从来不是一个人。</p>
+    <p>在中国做 FDE，我们见得最多的是两类人：一个是老板，一个是部门负责人。我们内部有一句话：老板给你入场券，部门负责人决定你能走多远。</p>
+  </aside>
+</section>
+
+<!-- 9 §3 老板 -->
+<section class="slide" data-title="03 老板在想什么">
+  <div class="kicker"><b>03</b>老板和高管各自在想什么</div>
+  <h2 class="m">老板在想什么</h2>
+  <div class="rows">
+    <div class="row f"><div class="t">要增长</div><div class="d">领先同行，有能讲给董事会、投资人听的结果</div></div>
+    <div class="row f"><div class="t">出于焦虑</div><div class="d">同行都在做，自己不做心里不踏实</div></div>
+    <div class="row f"><div class="t">看不见一线</div><div class="d">隔着好几层汇报，到手的信息都被整理过</div></div>
+    <div class="row f"><div class="t">最怕不了了之</div><div class="d">钱花了，部门不配合，上线了没人用</div></div>
+    <div class="row f"><div class="t">对降本的态度</div><div class="d">嘴上欢迎，心里有顾虑：补偿、稳定、口碑、士气</div></div>
+  </div>
+  <aside class="notes">
+    <p>先说老板。</p>
+    <p>老板要的是增长。他要领先同行，要有一个能讲给董事会、讲给投资人听的结果。</p>
+    <p>老板买 AI，说实话，很多时候是因为焦虑。同行都在做，他不做，心里不踏实。这不是坏事，焦虑会让他愿意先迈出第一步。</p>
+    <p>但老板有一个天然的问题：他看不见一线。他和一线之间隔着好几层汇报，到他手上的信息，都是被整理过的。</p>
+    <p>所以老板最怕什么？钱花了，部门不配合，系统上线了没人用，最后不了了之。这样的项目，在座各位应该都见过。</p>
+    <p>那老板对降本是什么态度？我的观察是：嘴上欢迎，心里有顾虑。真要减人，有补偿的成本，有团队稳定的成本，还有口碑的成本。留下来的人怎么想、士气会不会掉，他都得考虑。降本这笔账，在 PPT 上很好看，落到组织里，没那么好算。</p>
+  </aside>
+</section>
+
+<!-- 10 §3 部门负责人 -->
+<section class="slide" data-title="03 部门负责人在想什么">
+  <div class="kicker"><b>03</b>老板和高管各自在想什么</div>
+  <h2 class="m">部门负责人在想什么</h2>
+  <p class="lead" style="font-size:28px;margin-top:14px">换我坐在那个位置上，我也会这么想。</p>
+  <div class="rows" style="margin-top:30px">
+    <div class="row f"><div class="t">编制就是话语权</div><div class="d">团队规模决定预算、职级、在老板面前的分量</div></div>
+    <div class="row f"><div class="t">考核的是部门 KPI</div><div class="d">公司省下来的钱，不一定在他的考核表上</div></div>
+    <div class="row f"><div class="t">风险收益不对称</div><div class="d">做砸了他担责，做成了功劳未必是他的</div></div>
+    <div class="row f"><div class="t">信息是护城河</div><div class="d">流程被梳理透明，等于拿走他的信息壁垒</div></div>
+    <div class="row f"><div class="t">部门利益</div><div class="d">对接的是数字化或 IT，受益的是业务部门</div></div>
+  </div>
+  <aside class="notes">
+    <p>再说部门负责人。</p>
+    <p>先说明一下：我讲部门负责人的处境，不是在说谁的不是。换我坐在那个位置上，我也会这么想。在座如果有企业的管理者，应该比我更有体会。</p>
+    <p>他最在意的，是两样东西。</p>
+    <p>一样是编制。编制就是话语权。团队有多大，决定了他的预算、他的职级，也决定了他在老板面前的分量。</p>
+    <p>另一样是信息。哪个流程怎么跑、哪些数据在哪、哪些坑不能踩，他最清楚。外部团队进来，把流程全部梳理透明，在他看来，等于拿走了他的信息壁垒。</p>
+    <p>再加上两个现实：他的考核是自己部门的 KPI，公司省下来的钱，不会出现在他的考核表上；项目做砸了他担责，做成了，功劳却未必是他的。</p>
+    <p>还有一层，是部门和部门之间。来对接 FDE 的，常常是数字化部门或者 IT 部门；真正用、真正受益的，是业务部门。两边都想当这个项目的主人。你站错了一边，另一边就不会全力配合。</p>
+  </aside>
+</section>
+
+<!-- 11 §3 两条路线 -->
+<section class="slide" data-title="03 两条路线在他眼里">
+  <div class="kicker"><b>03</b>老板和高管各自在想什么</div>
+  <h2 class="m">两条路线，在部门负责人眼里</h2>
+  <div class="two">
+    <div class="card f">
+      <div class="cap">降本 FDE</div>
+      <div class="say">「外部团队来证明，<br>我部门人多了。」</div>
+      <div class="res">配合到表面：数据给一部分，访谈说一半，坑不主动说。</div>
+    </div>
+    <div class="card hi f">
+      <div class="cap">增长 FDE</div>
+      <div class="say">「来帮我完成 KPI、多拿预算、<br>在老板面前有成绩。」</div>
+      <div class="res">主动配合：主动给数据，主动配人，做完一件来聊下一件。</div>
+    </div>
+  </div>
+  <p class="m mt f" style="font-size:42px">你进来，是动他的<em class="a">分母</em>，还是帮他做大<em class="a">分子</em>？</p>
+  <aside class="notes">
+    <p>把这些放在一起看，降本和增长这两条路线，在部门负责人眼里有什么区别？</p>
+    <p>降本的 FDE 走进来，在他看来，是一个外部团队来证明他部门人多了。他会配合吗？会，老板安排的，他一定配合。但只配合到表面。数据给一部分，访谈说一半，流程里真正的坑，不会主动告诉你。</p>
+    <p>增长的 FDE 走进来，是来帮他完成 KPI 的，帮他多拿预算，帮他在老板面前有成绩。这时候他是什么状态？他会主动给你数据，主动给你配人。做完一件事，他会来找你聊下一件。</p>
+    <p>同一个人，同一家公司，两种完全不同的配合度。区别只在于：你进来，是去动他的分母，还是帮他做大分子。</p>
+  </aside>
+</section>
+
+<!-- 12 §3 我们的做法 -->
+<section class="slide" data-title="03 我们的做法">
+  <div class="kicker"><b>03</b>老板和高管各自在想什么</div>
+  <h2 class="m">所以我们的做法，就三条</h2>
+  <div class="nums">
+    <div class="nrow f"><div class="n">01</div><div class="t">切口选在他的 KPI 上<small>不选在能省几个人上</small></div></div>
+    <div class="nrow f"><div class="n">02</div><div class="t">项目成果是他的<small>成果由他向老板汇报，我们不越级；每条建议由业务负责人批准</small></div></div>
+    <div class="nrow f"><div class="n">03</div><div class="t">不碰编制<small>至少在第一阶段，不谈减人</small></div></div>
+  </div>
+  <aside class="notes">
+    <p>所以我们的做法很简单，就三条。</p>
+    <p>第一，切口选在部门负责人的 KPI 上，不选在能省几个人上。</p>
+    <p>第二，功劳给他。成果由他拿去向老板汇报，我们不越级。在我们的系统里，每一条建议最后都要业务负责人点头批准。决定权在他手里，功劳自然也在他手里。</p>
+    <p>第三，先不碰编制。至少在第一阶段，我们不谈减人。</p>
+    <p>说起来简单，落到项目里是什么样？我拿一个真实的项目来讲。</p>
+  </aside>
+</section>
+
+<!-- 13 §4 案例切口 -->
+<section class="slide" data-title="04 案例：下一批该上什么款">
+  <div class="kicker"><b>04</b>我们是怎么做的 · 某国际快时尚集团 · 三个选择</div>
+  <p class="lead">运营部门每天都在回答一个问题：</p>
+  <h2 class="xl mt-s">下一批，该上<em class="a">什么款</em>？</h2>
+  <p class="lead mt f">趋势最早出现在社交媒体。等销售数据告诉你，已经晚了。</p>
+  <div class="pills f">
+    <span class="pill no">帮你们省几个买手</span>
+    <span class="pill yes">帮运营部门更早看到趋势</span>
+  </div>
+  <aside class="notes">
+    <p>这是一家国际快时尚集团，名字我就不说了。</p>
+    <p>快时尚的运营部门，每天都在回答一个问题：下一批，该上什么款？</p>
+    <p>以前回答这个问题，靠买手的经验，靠看秀，靠看销售数据。但现在，趋势最早出现的地方是社交媒体。一种颜色、一种配色方式，往往先在社媒上火起来，过一段时间才会体现在销售数据里。等销售数据告诉你，已经晚了。</p>
+    <p>这个项目，我不按时间顺序讲。我只讲我们做对的三个选择。</p>
+    <p>第一个选择：切口选在哪。</p>
+    <p>我们没有说「帮你们省几个买手」，我们说的是「帮运营部门更早看到趋势」。前一句，是在动他的分母；后一句，是他自己的 KPI。</p>
+  </aside>
+</section>
+
+<!-- 14 §4 第一步 信号 -->
+<section class="slide" data-title="04 选择一：切口（信号）">
+  <div class="kicker"><b>04</b>选择一 · 切口选在哪</div>
+  <h2 class="m">要更早看到，先把信号接进来</h2>
+  <div class="stats">
+    <div class="stat f"><div class="num">13<span>万级</span></div><div class="lbl">帖子 · 2026 年 1–5 月</div></div>
+    <div class="stat f"><div class="num">60<span>万+</span></div><div class="lbl">有效评论</div></div>
+    <div class="stat f"><div class="num">400<span>+</span></div><div class="lbl">服饰标签 · 每日更新</div></div>
+  </div>
+  <div class="mt-l f">
+    <p class="lead" style="font-size:28px">从图片中提取视觉语义</p>
+    <div class="chips"><span class="chip">明度</span><span class="chip">饱和度</span><span class="chip">色温</span><span class="chip">配色方式</span><span class="chip">图案</span></div>
+  </div>
+  <aside class="notes">
+    <p>要更早看到，就得先把信号接进来。今年一到五月，我们看了十三万级的帖子、六十多万条有效评论，从图片里提取明度、饱和度、色温、配色方式、图案这些视觉语义，维护了四百多个服饰标签，每天更新。</p>
+    <p>这些数字不是重点。重点是，这件事从第一天起，就是在帮运营部门做他本来就要做的事。</p>
+  </aside>
+</section>
+
+<!-- 15 §4 第二步 矩阵 -->
+<section class="slide" id="mxSlide" data-title="04 选择二：交付物（矩阵）">
+  <div class="kicker"><b>04</b>选择二 · 交付什么</div>
+  <div class="mx-wrap">
+    <div>
+      <h2 class="m">把趋势翻译成<br>运营部门的语言</h2>
+      <p class="lead mt-s">他不需要「社媒上流行什么」。<br>他要知道：<em class="a" style="font-weight:600">我的商品矩阵里，哪里有缺口？</em></p>
+      <div class="legend">
+        <span><i id="lgFull"></i>社媒上热、货架上已覆盖</span>
+        <span class="f" id="gapLegend"><i style="background:var(--accent)"></i>空格：社媒在火、货架没有，就是缺口</span>
+      </div>
+    </div>
+    <div class="mx">
+      <div class="ax-x">品类 →</div>
+      <div class="ax-y">颜色语义标签 →</div>
+      <div class="mx-grid" id="mxGrid"></div>
+      <div style="font-size:20px;color:var(--muted);margin-top:16px">9 个品类 × 18 种颜色属性 · 示意图</div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>第二个选择：交付什么。</p>
+    <p>很多 FDE 项目的交付物，是一份报告。但运营负责人不需要一份「社媒上流行什么」的报告。他想知道的是：我的商品矩阵里，哪里有缺口？</p>
+    <p>所以我们交付的是一张矩阵。纵轴是颜色语义标签，横轴是品类，九个品类乘十八种颜色属性。社媒上正在火、但货架上还没有的，就是一个空格。空格，就是款式缺口，就是机会。</p>
+    <p>（按一下，高亮缺口格）运营负责人拿到这张图，不需要我们解释，他自己就知道下一步该做什么决定。</p>
+  </aside>
+</section>
+
+<!-- 16 §4 第三步 结果 -->
+<section class="slide" data-title="04 选择二：结果 7×">
+  <div class="kicker"><b>04</b>选择二 · 交付什么</div>
+  <div class="giant">7×</div>
+  <p class="giant-lbl">点击率 · 同比</p>
+  <p class="lead mt f">不是「AI 帮你省了多少人」，<br>是他自己业务上的数字，可以直接拿去向上汇报。</p>
+  <aside class="notes">
+    <p>结果呢？我只讲一个数：点击率同比提高了 7 倍。【待确认：是哪类商品或页面的点击率、和什么比、时间段多长；如果不能说是我们的建议带来的，改成「上线后相关商品的点击率同比提高了 7 倍」】</p>
+    <p>（停顿）</p>
+    <p>注意，这个数字不是「AI 帮你省了多少人」，是他自己业务上的数字。他可以直接拿去向上汇报。功劳在他手里。</p>
+  </aside>
+</section>
+
+<!-- 17 §4 第四步 信任与渗透 -->
+<section class="slide" data-title="04 选择三：怎么扩">
+  <div class="kicker"><b>04</b>选择三 · 怎么扩</div>
+  <h2 class="m">用一次是试用；一直在用，才是<em class="a">信任</em>。</h2>
+  <p class="lead" style="font-size:28px;margin-top:14px">报告做了多轮，一直在用于商品决策。</p>
+  <div class="path">
+    <div class="node first f"><div class="nm">运营部门</div><div class="ds">起点：风格趋势与款式缺口</div></div>
+    <div class="arrow f">→</div>
+    <div class="node f"><div class="nm">公关部门</div><div class="ds">产生质量事件后，<br>如何调整对外宣发口径</div></div>
+    <div class="arrow f">→</div>
+    <div class="node f"><div class="nm">供应端、营运端</div><div class="ds">社媒评论里的用户反馈，<br>归类后送到供应端、营运端</div></div>
+  </div>
+  <p class="m mt f" style="font-size:38px">我们没有去敲门，是运营部门把我们带过去的。</p>
+  <aside class="notes">
+    <p>第三个选择：怎么扩。</p>
+    <p>报告不是做一次就结束，而是做了很多轮，一直在用于商品决策。用一次，那叫试用；一直有人在用，才叫信任。</p>
+    <p>【可选：补一句真实细节，比如最开始是谁把我们引进来的，或者他第一次拿报告去开会时的一个场景】</p>
+    <p>有了信任，扩张就不用我们自己去推。有一次产生了一个质量事件，我们监测到的相关内容，被转到了公关部门，帮他们判断该如何调整对外宣发的口径。【可选：补一句是谁转给公关部门的】还有一条线：社媒评论里的用户反馈，我们做了归类，送到了供应端和营运端。</p>
+    <p>我们没有去敲公关部门的门，也没有去敲供应端、营运端的门。是运营部门把我们带过去的。从一个部门，走进了好几个部门。</p>
+  </aside>
+</section>
+
+<!-- 18 §4 补充：酒店 -->
+<section class="slide" data-title="04 补充：连锁酒店集团">
+  <div class="kicker"><b>04</b>补充案例 · 某连锁酒店集团</div>
+  <h2 class="m">调价建议，直接对着收入</h2>
+  <div class="flow">
+    <div class="step f"><div class="k">信号</div><div class="v">周边竞品的价格变动和促销</div></div>
+    <div class="step f"><div class="k">判断</div><div class="v">结合房态与价格带，给出调价建议、理由和影响测算</div></div>
+    <div class="step f"><div class="k">审批</div><div class="v">门店或品类负责人批准</div></div>
+    <div class="step end f"><div class="k">结果</div><div class="v">每间可售房的收入</div></div>
+  </div>
+  <p class="lead mt-l f">老板一听就懂，因为它直接就是钱。<br>做出东西之后，客户在跟我们谈加码。</p>
+  <aside class="notes">
+    <p>这三个选择，不是只在一个客户身上成立。再用三十秒讲另一个客户，一家连锁酒店集团。</p>
+    <p>我们做的是：盯着每家门店周边竞品的价格变动和促销，结合门店自己的房态和价格带，给出调价建议，附上理由和影响测算，最后由门店或者品类负责人来批准。</p>
+    <p>切口是收入，交付的是一张能直接执行的调价单，决定权在负责人手里。结果看每间可售房的收入，老板一听就懂，因为它直接就是钱。做出东西之后，客户在跟我们谈加码。</p>
+  </aside>
+</section>
+
+<!-- 19 §4 三件事 -->
+<section class="slide" data-title="04 三句话">
+  <div class="kicker"><b>04</b>我们是怎么做的</div>
+  <h2 class="m">三个选择，收成三句话</h2>
+  <div class="nums">
+    <div class="nrow f"><div class="n">01</div><div class="t">切口看部门负责人的 KPI<small>不看能省几个人</small></div></div>
+    <div class="nrow f"><div class="n">02</div><div class="t">第一个结果要快<small>而且要能让他拿去汇报</small></div></div>
+    <div class="nrow f"><div class="n">03</div><div class="t">让他带你进下一个部门<small>不用自己去敲门</small></div></div>
+  </div>
+  <aside class="notes">
+    <p>三个选择，收成三句话。</p>
+    <p>第一，切口看部门负责人的 KPI，不看能省几个人。</p>
+    <p>第二，第一个结果要快，而且要能让他拿去汇报。</p>
+    <p>第三，让他带你进下一个部门，不要自己去敲门。</p>
+  </aside>
+</section>
+
+<!-- 20 §4 金句 -->
+<section class="slide" data-title="04 往外拿与往里放">
+  <div class="kicker"><b>04</b>我们是怎么做的</div>
+  <p class="close-line">降本，是<span class="muted">从组织里往外拿</span>东西<br><span class="dash">——</span>每走一步，都有人防着你。</p>
+  <p class="close-line f">增长，是<em class="a">往组织里放</em>东西<br><span class="dash">——</span>每做成一步，就有人带你走下一步。</p>
+  <aside class="notes">
+    <p>降本，是从组织里往外拿东西，每走一步，都有人防着你。增长，是往组织里放东西，每做成一步，就有人带你走下一步。</p>
+  </aside>
+</section>
+
+<!-- 21 §5 终局之问 -->
+<section class="slide" data-title="05 终局之问">
+  <div class="kicker"><b>05</b>FDE 的终局</div>
+  <p class="lead">最后，留一个问题。</p>
+  <h2 class="xl mt">如果 FDE 真能帮客户带来增长，<br>我们还应该按<em class="a">人天</em>收费吗？</h2>
+  <aside class="notes">
+    <p>最后，我不讲结论，留一个问题。</p>
+    <p>今天讲的，是 FDE 换一种思路：从帮客户省钱，变成帮客户赚钱。</p>
+    <p>但如果这件事是真的，就会碰到一个绕不过去的问题：如果 FDE 真能帮客户带来增长，我们还应该按人天收费吗？</p>
+    <p>（停顿）</p>
+    <p>按人天收费，客户买的是我们的时间。时间花得越多，我们收得越多。这和客户真正要的东西，其实是反的。客户要的是增长。</p>
+    <p>那换成按效果收费呢？增长怎么衡量？多少是我们带来的，多少是市场本来就有的？谁来认定？</p>
+    <p>这些问题，我们自己也还没有完整的答案。【可选：这也是我们下一场想聊的，FDE 的 benchmark 到底该怎么定。】</p>
+  </aside>
+</section>
+
+<!-- 22 结束 -->
+<section class="slide cover" data-title="结束">
+  <div class="end-wrap">
+    <div>
+      <div class="rule"></div>
+      <h1 class="xl">谢谢</h1>
+      <p class="sub">换一种思路做 FDE</p>
+      <p class="meta">WantAi · 下一场：如何定义 FDE 的 benchmark</p>
+    </div>
+    <figure class="qr noedit">
+      <img src="data:image/png;base64,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" alt="Jerry 的微信二维码">
+      <figcaption>扫码加我微信<span>Jerry</span></figcaption>
+    </figure>
+  </div>
+  <aside class="notes">
+    <p>今天就到这里，谢谢大家。</p>
+    <p>（停在本页，留时间给大家扫码）</p>
+  </aside>
+</section>
+
+<div id="brand">换一种思路做 FDE</div>
+<div id="counter"></div>
+<div id="progress"></div>
+</div></div>
+
+<div id="black"></div>
+<div id="notesPanel" class=""></div>
+<div id="help" class="">
+  <div><kbd>→</kbd>下一步 / 下一页（空格、回车、PageDown 同）</div>
+  <div><kbd>←</kbd>上一步 / 上一页</div>
+  <div><kbd>S</kbd>打开演讲者窗口（备注 + 计时）</div>
+  <div><kbd>N</kbd>本窗口显示 / 隐藏备注</div>
+  <div><kbd>F</kbd>全屏　<kbd>B</kbd>黑屏　<kbd>T</kbd>深浅色</div>
+  <div><kbd>E</kbd>编辑模式：直接改字和备注，<kbd>⌘S</kbd>保存</div>
+  <div><kbd>?</kbd>显示 / 隐藏本提示</div>
+</div>
+<div id="editbar">
+  <span class="lbl">编辑模式</span>
+  <button id="edPrev" type="button">‹ 上一页</button><span class="pos" id="edPos"></span><button id="edNext" type="button">下一页 ›</button>
+  <button id="edNotes" type="button">备注</button>
+  <span class="dirty">● 未保存</span><button id="edSave" class="primary" type="button">保存</button>
+  <button id="edExit" type="button">退出</button>
+</div>
+<div id="toast" class=""></div>
+
+<script>
+(function(){
+  const W=1600,H=900;
+  const stage=document.getElementById('stage');
+  const slides=[...document.querySelectorAll('.slide')];
+  const counter=document.getElementById('counter');
+  const progress=document.getElementById('progress');
+  const brand=document.getElementById('brand');
+  const notesPanel=document.getElementById('notesPanel');
+  const help=document.getElementById('help');
+  const black=document.getElementById('black');
+  const toastEl=document.getElementById('toast');
+  const edPos=document.getElementById('edPos');
+  let cur=0, step=0, spk=null, t0=null;
+  let editing=false, dirty=false, fileHandle=null, toastTimer=null;
+
+  function store(k,v){try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){return null;}}
+  const savedTheme=store('fde-theme'); if(savedTheme==='light') document.documentElement.dataset.theme='light';
+
+  const viewport=document.getElementById('viewport');
+  function fit(){
+    // 编辑模式下给工具栏和备注栏让出位置，幻灯片不被遮住
+    let top=0,bottom=0;
+    if(typeof editing!=='undefined'&&editing){ top=64; if(notesPanel.classList.contains('on')) bottom=notesPanel.offsetHeight+12; }
+    viewport.style.top=top+'px'; viewport.style.bottom=bottom+'px';
+    const s=Math.min(innerWidth/W,(innerHeight-top-bottom)/H);
+    stage.style.transform='scale('+s+')';
+  }
+  addEventListener('resize',fit); fit();
+
+  // 矩阵示意：确定性生成
+  (function buildMatrix(){
+    const g=document.getElementById('mxGrid'); if(!g) return;
+    const gaps=new Set(['2,3','6,5','4,8','8,10','1,12','5,14','7,16','3,17']);
+    let seed=7;
+    const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+    for(let r=0;r<18;r++)for(let c=0;c<9;c++){
+      const i=document.createElement('i');
+      if(gaps.has(c+','+r)) i.className='gap';
+      else{const v=rnd();const a=0.10+v*0.30;i.style.background='rgba(var(--cell),'+a.toFixed(2)+')';}
+      g.appendChild(i);
+    }
+    const lg=document.getElementById('lgFull'); if(lg) lg.style.background='rgba(var(--cell),.32)';
+  })();
+
+  const frags=i=>[...slides[i].querySelectorAll('.f')];
+
+  function render(){
+    slides.forEach((el,k)=>{
+      el.classList.toggle('active',k===cur);
+      if(editing&&k===cur) el.setAttribute('contenteditable','true'); else el.removeAttribute('contenteditable');
+    });
+    document.querySelectorAll('#mxGrid,.noedit').forEach(el=>{ if(editing) el.setAttribute('contenteditable','false'); else el.removeAttribute('contenteditable'); });
+    const fs=frags(cur);
+    if(editing) step=fs.length; // 编辑时显示本页全部内容
+    fs.forEach((f,k)=>f.classList.toggle('on',k<step));
+    const mx=document.getElementById('mxSlide');
+    if(mx) mx.classList.toggle('lit', slides[cur]===mx && step>=1);
+    counter.textContent=String(cur+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    progress.style.width=((cur+1)/slides.length*100)+'%';
+    brand.style.display=slides[cur].classList.contains('cover')?'none':'';
+    const n=slides[cur].querySelector('.notes');
+    notesPanel.innerHTML='<div style="opacity:.6;margin-bottom:8px">'+(cur+1)+'. '+(slides[cur].dataset.title||'')+(editing?'　·　备注（可直接修改）':'')+'</div>'+
+      '<div id="notesBody"'+(editing?' contenteditable="true"':'')+'>'+(n?n.innerHTML:'')+'</div>';
+    edPos.textContent=(cur+1)+' / '+slides.length;
+    fit();
+    try{history.replaceState(null,'','#'+(cur+1));}catch(e){}
+    renderSpeaker();
+  }
+  function go(i,atEnd){cur=Math.max(0,Math.min(slides.length-1,i));step=atEnd?frags(cur).length:0;render();}
+  function next(){ if(step<frags(cur).length){step++;render();} else if(cur<slides.length-1) go(cur+1,false); }
+  function prev(){ if(step>0){step--;render();} else if(cur>0) go(cur-1,true); }
+
+  function toggleFull(){ if(!document.fullscreenElement){document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen().catch(()=>{});} else document.exitFullscreen(); }
+  function toggleTheme(){ const l=document.documentElement.dataset.theme==='light'; if(l) delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme='light'; store('fde-theme',l?'dark':'light'); }
+
+  // 演讲者窗口
+  const SPK='<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>演讲者视图 · 换一种思路做 FDE</title><style>'+
+    'body{margin:0;background:#111;color:#eee;font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;display:grid;grid-template-rows:auto 1fr auto;height:100vh}'+
+    'header{display:flex;align-items:baseline;gap:28px;padding:18px 28px;border-bottom:1px solid #333}'+
+    '#timer{font-size:44px;font-weight:700;font-variant-numeric:tabular-nums}#timer.warn{color:#f07b3d}'+
+    '#pos{font-size:22px;color:#aaa;font-variant-numeric:tabular-nums}#cur{font-size:24px;font-weight:600;flex:1}'+
+    'button{background:#222;color:#ddd;border:1px solid #444;border-radius:6px;padding:6px 14px;font-size:15px;cursor:pointer}'+
+    '#notes{padding:22px 32px;overflow:auto;font-size:24px;line-height:1.8}#notes p{margin:0 0 14px}'+
+    'footer{padding:14px 28px;border-top:1px solid #333;font-size:18px;color:#999}#next{color:#ddd}'+
+    '</style></head><body><header><div id="timer">00:00</div><div id="pos"></div><div id="cur"></div><button id="reset">计时归零</button></header>'+
+    '<div id="notes"></div><footer>下一页：<span id="next"></span>　·　← → 翻页，本窗口和主窗口都可以操作</footer></body></html>';
+
+  function openSpeaker(){
+    if(spk&&!spk.closed){spk.focus();return;}
+    spk=window.open('','fde-speaker','width=1100,height=760');
+    if(!spk){alert('浏览器拦截了弹出窗口。请允许本页弹窗后再按 S。');return;}
+    spk.document.open();spk.document.write(SPK);spk.document.close();
+    spk.document.addEventListener('keydown',onKey);
+    spk.document.getElementById('reset').onclick=()=>{t0=Date.now();tick();};
+    if(!t0) t0=Date.now();
+    renderSpeaker();tick();
+  }
+  function renderSpeaker(){
+    if(!spk||spk.closed) return;
+    const d=spk.document, n=slides[cur].querySelector('.notes'), fs=frags(cur).length;
+    const pos=d.getElementById('pos'); if(!pos) return;
+    pos.textContent=(cur+1)+' / '+slides.length+(fs?'　步骤 '+step+' / '+fs:'');
+    d.getElementById('cur').textContent=slides[cur].dataset.title||'';
+    d.getElementById('notes').innerHTML=n?n.innerHTML:'（本页无备注）';
+    d.getElementById('next').textContent=step<fs?'（本页还有 '+(fs-step)+' 步）':(slides[cur+1]?slides[cur+1].dataset.title:'已是最后一页');
+  }
+  function tick(){
+    if(!spk||spk.closed||!t0) return;
+    const s=Math.floor((Date.now()-t0)/1000), el=spk.document.getElementById('timer'); if(!el) return;
+    el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+    el.classList.toggle('warn',s>=18*60);
+  }
+  setInterval(tick,1000);
+
+  // 编辑模式
+  function toast(msg){
+    toastEl.textContent=msg; toastEl.classList.add('on');
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>toastEl.classList.remove('on'),2600);
+  }
+  function markDirty(){ dirty=true; document.body.classList.add('dirty'); }
+  function toggleEdit(){
+    editing=!editing;
+    document.body.classList.toggle('editing',editing);
+    if(editing){ notesPanel.classList.add('on'); help.classList.remove('on'); }
+    else{ notesPanel.classList.remove('on'); if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); }
+    go(cur,true);
+    toast(editing?'编辑模式：点文字直接改，改完点「保存」或按 ⌘S':'已退出编辑模式'+(dirty?'，还有修改没保存':''));
+  }
+  function cleanHTML(){
+    const root=document.documentElement.cloneNode(true);
+    root.removeAttribute('data-theme');
+    root.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    root.querySelectorAll('.slide').forEach(el=>el.classList.remove('active','lit'));
+    root.querySelectorAll('.on').forEach(el=>el.classList.remove('on'));
+    const b=root.querySelector('body'); if(b) b.removeAttribute('class');
+    const g=root.querySelector('#mxGrid'); if(g) g.innerHTML='';
+    ['#viewport','#stage','#brand','#progress','#lgFull'].forEach(s=>{const el=root.querySelector(s); if(el) el.removeAttribute('style');});
+    ['#notesPanel','#counter','#edPos','#toast'].forEach(s=>{const el=root.querySelector(s); if(el) el.innerHTML='';});
+    return '<!doctype html>\n'+root.outerHTML+'\n';
+  }
+  async function save(){
+    const html=cleanHTML();
+    const name=decodeURIComponent((location.pathname.split('/').pop())||'')||'演示.html';
+    if(window.showSaveFilePicker){
+      try{
+        if(!fileHandle) fileHandle=await window.showSaveFilePicker({suggestedName:name,types:[{description:'HTML',accept:{'text/html':['.html']}}]});
+        const w=await fileHandle.createWritable(); await w.write(html); await w.close();
+        dirty=false; document.body.classList.remove('dirty'); toast('已保存到「'+fileHandle.name+'」'); return;
+      }catch(err){ if(err&&err.name==='AbortError') return; fileHandle=null; }
+    }
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
+    a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+    dirty=false; document.body.classList.remove('dirty');
+    toast('已下载到「下载」文件夹，用它替换原文件即可');
+  }
+  stage.addEventListener('input',()=>{ if(editing) markDirty(); });
+  notesPanel.addEventListener('input',()=>{
+    if(!editing) return;
+    const body=document.getElementById('notesBody'), a=slides[cur].querySelector('.notes');
+    if(body&&a) a.innerHTML=body.innerHTML;
+    markDirty(); renderSpeaker();
+  });
+  [stage,notesPanel].forEach(el=>el.addEventListener('paste',e=>{
+    if(!editing) return;
+    e.preventDefault();
+    document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text/plain'));
+  }));
+  addEventListener('beforeunload',e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
+  document.getElementById('edPrev').onclick=()=>go(cur-1,true);
+  document.getElementById('edNext').onclick=()=>go(cur+1,true);
+  document.getElementById('edNotes').onclick=()=>{notesPanel.classList.toggle('on');fit();};
+  document.getElementById('edSave').onclick=()=>save();
+  document.getElementById('edExit').onclick=()=>toggleEdit();
+
+  function onKey(e){
+    const k=e.key;
+    if((e.metaKey||e.ctrlKey)&&(k==='s'||k==='S')){ if(editing||dirty){ e.preventDefault(); save(); } return; }
+    if(editing){
+      if(k==='Escape'){ e.preventDefault(); toggleEdit(); return; }
+      if(k==='PageDown'){ e.preventDefault(); go(cur+1,true); return; }
+      if(k==='PageUp'){ e.preventDefault(); go(cur-1,true); return; }
+      const t=e.target;
+      if(t&&t.isContentEditable){
+        // 幻灯片里回车只换行，不新建段落，避免打乱版式
+        if(k==='Enter'&&!e.shiftKey&&stage.contains(t)){ e.preventDefault(); if(!document.execCommand('insertLineBreak')) document.execCommand('insertHTML',false,'<br>'); }
+        return;
+      }
+      if(e.metaKey||e.ctrlKey||e.altKey) return;
+      if(k==='ArrowRight'||k==='ArrowDown'){ e.preventDefault(); go(cur+1,true); }
+      else if(k==='ArrowLeft'||k==='ArrowUp'){ e.preventDefault(); go(cur-1,true); }
+      else if(k==='e'||k==='E'){ toggleEdit(); }
+      return;
+    }
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();next();}
+    else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev();}
+    else if(k==='Home'){e.preventDefault();go(0,false);}
+    else if(k==='End'){e.preventDefault();go(slides.length-1,true);}
+    else if(k==='f'||k==='F'){toggleFull();}
+    else if(k==='s'||k==='S'){openSpeaker();}
+    else if(k==='n'||k==='N'){notesPanel.classList.toggle('on');fit();}
+    else if(k==='t'||k==='T'){toggleTheme();}
+    else if(k==='b'||k==='B'||k==='.'){black.classList.toggle('on');}
+    else if(k==='?'||k==='h'||k==='H'){help.classList.toggle('on');}
+    else if(k==='e'||k==='E'){toggleEdit();}
+  }
+  document.addEventListener('keydown',onKey);
+
+  // 点击：右侧三分之二下一步，左侧三分之一上一步
+  document.getElementById('viewport').addEventListener('click',e=>{ if(editing) return; if(e.clientX<innerWidth/3) prev(); else next(); });
+  black.addEventListener('click',()=>black.classList.remove('on'));
+  let tx=null;
+  addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+  addEventListener('touchend',e=>{ if(tx===null||editing) return; const dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>50){dx<0?next():prev();} tx=null; },{passive:true});
+
+  const h=parseInt((location.hash||'').slice(1),10);
+  go(isNaN(h)?0:h-1,false);
+  help.classList.add('on'); setTimeout(()=>help.classList.remove('on'),4000);
+})();
+</script>
+
+
+</body></html>
