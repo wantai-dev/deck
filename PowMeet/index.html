@@ -4,11 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
 <title>AI 滑雪眼镜产品时间计划</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
-<style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
 <style>
@@ -37,26 +38,8 @@
   --font-num: "Barlow Condensed", "DIN Condensed", "Arial Narrow", system-ui, sans-serif;
   --label-w: 272px;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0A121B; --surface: #111C28; --surface-2: #172432; --fg: #E7EDF3; --muted: #A9B7C6; --faint: #8C9BAC;
-    --line: #1F2E3E; --line-strong: #30435A; --ice: #7FB6F0;
-    --season: rgba(127, 182, 240, .08); --season-ink: #7FB6F0;
-    --rd: #6E9BF5; --rd-tint: #17294B; --mk: #F3925A; --mk-tint: #37210F; --co: #3CC4B4; --co-tint: #0F2E2B;
-    --on-solid: #07111B; --risk: #F7877C; --risk-tint: #3A1613; --ok: #5DD58A; --ok-tint: #0F2F1C;
-    --wip: #6E9BF5; --wip-tint: #17294B; --idle: #8C9BAC; --idle-tint: #1A2836;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0A121B; --surface: #111C28; --surface-2: #172432; --fg: #E7EDF3; --muted: #A9B7C6; --faint: #8C9BAC;
-  --line: #1F2E3E; --line-strong: #30435A; --ice: #7FB6F0;
-  --season: rgba(127, 182, 240, .08); --season-ink: #7FB6F0;
-  --rd: #6E9BF5; --rd-tint: #17294B; --mk: #F3925A; --mk-tint: #37210F; --co: #3CC4B4; --co-tint: #0F2E2B;
-  --on-solid: #07111B; --risk: #F7877C; --risk-tint: #3A1613; --ok: #5DD58A; --ok-tint: #0F2F1C;
-  --wip: #6E9BF5; --wip-tint: #17294B; --idle: #8C9BAC; --idle-tint: #1A2836;
-  color-scheme: dark;
-}
+/* Single light theme by request: no dark-mode palette. */
+:root { color-scheme: light; }
 
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 15px; line-height: 1.5;
