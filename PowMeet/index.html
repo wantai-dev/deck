@@ -520,7 +520,9 @@ textarea { width: 100%; min-height: 90px; resize: vertical; }
 
   /* Outside the Claude viewer (e.g. deck.wantai.ai) the page reads a static snapshot, data.json, exported from the same database. */
   function loadStatic() {
-    fetch("./data.json", { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); }).then(function (d) {
+    /* Resolve beside the page even when the host serves it without a trailing slash (/PowMeet → /PowMeet/data.json). */
+    var base = location.pathname.replace(/index\.html$/, "").replace(/\/?$/, "/");
+    fetch(base + "data.json", { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); }).then(function (d) {
       var wrap = function (x) { return { id: String(x.id || ""), exists: true, data: function () { return x; } }; };
       state.items = (d.items || []).map(function (x) { return cleanItem(wrap(x)); });
       state.milestones = (d.milestones || []).map(function (x) { return { id: String(x.id || ""), title: String(x.title || ""), month: String(x.month || ""), lane: String(x.lane || "rd"), status: STATUS[x.status] ? x.status : "not_started" }; });
